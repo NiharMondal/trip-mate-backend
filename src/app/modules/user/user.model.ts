@@ -1,10 +1,10 @@
 import { model, Schema } from "mongoose";
-import bcrypt from 'bcrypt'
-import { envConfig } from "../../../config";
+import { IUser } from "./user.interface";
+import { hashPassword } from "../../../helpers/hashPasword";
 
 
 
-const userSchema = new Schema({
+const userSchema = new Schema<IUser>({
     
     name: {
         type: String,
@@ -22,13 +22,14 @@ const userSchema = new Schema({
 });
 
 
-const User = model("User", userSchema);
+userSchema.pre("save", async function () {
+    const hashedPassword = await hashPassword(this.password);
+    
+	this.password = hashedPassword;
+});
 
+
+const User = model<IUser>("User", userSchema);
 export default User;
 
 
-userSchema.pre("save", async function(){
-    const hashPass = await bcrypt.hash(this.password, envConfig.salt_round);
-
-    this.password = hashPass;
-})

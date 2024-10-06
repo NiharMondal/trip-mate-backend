@@ -5,7 +5,8 @@ import dotenv from 'dotenv'
 dotenv.config({path: path.join(process.cwd(), ".env")});
 
 export  const envConfig =  {
-    port: 5000,
-    database_url: process.env.URI,
+    port: 5050,
     salt_round: 10,
+    database_url: process.env.URI,
+    jwt_secret: process.env.JWT_SECRET,
 }

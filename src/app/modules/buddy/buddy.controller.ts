@@ -1,13 +1,13 @@
 import { Request, Response } from "express";
 import asyncHandler from "../../utils/asyncHandler";
-import { tripServices } from "./trip.services";
+import { buddyServices } from "./buddy.services";
 import sendResponse from "../../utils/sendResponse";
 
 
 //create trip
 const insertIntoDB = asyncHandler(async(req:Request, res:Response)=>{
 
-    const result = await tripServices.insertIntoDB(req.body);
+    const result = await buddyServices.insertIntoDB(req.body);
 
 
     sendResponse(res, {
@@ -21,7 +21,7 @@ const insertIntoDB = asyncHandler(async(req:Request, res:Response)=>{
 //get all trip
 const getAllFromDB = asyncHandler(async(req:Request, res:Response)=>{
 
-    const result = await tripServices.getAllFromDB();
+    const result = await buddyServices.getAllFromDB();
 
 
     sendResponse(res, {
@@ -35,7 +35,7 @@ const getAllFromDB = asyncHandler(async(req:Request, res:Response)=>{
 //get single data by slug
 const getBySlug = asyncHandler(async(req:Request, res:Response)=>{
     const {slug} = req.params;
-    const result = await tripServices.getBySlug(slug);
+    const result = await buddyServices.getBySlug(slug);
 
 
     sendResponse(res, {
@@ -49,7 +49,7 @@ const getBySlug = asyncHandler(async(req:Request, res:Response)=>{
 //update single data by id
 const deleteFromDB = asyncHandler(async(req:Request, res:Response)=>{
     const {id} = req.params;
-    const result = await tripServices.deleteFromDB(id);
+    const result = await buddyServices.deleteFromDB(id);
 
 
     sendResponse(res, {
@@ -62,7 +62,7 @@ const deleteFromDB = asyncHandler(async(req:Request, res:Response)=>{
 
 const updateIntoDB = asyncHandler(async(req:Request, res:Response)=>{
     const {id} = req.params;
-    const result = await tripServices.updateIntoDB(id, req.body);
+    const result = await buddyServices.updateIntoDB(id, req.body);
 
 
     sendResponse(res, {
@@ -71,7 +71,7 @@ const updateIntoDB = asyncHandler(async(req:Request, res:Response)=>{
         result: result
     })
 });
-export const tripController = {
+export const buddyController = {
     insertIntoDB,
     getAllFromDB,
     getBySlug,

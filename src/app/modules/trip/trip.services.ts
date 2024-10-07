@@ -61,7 +61,7 @@ const getMyTrips = async(userId: string)=>{
 
     const res = await Trip.find({
         user: userId
-    }).populate({path:"buddyRequest", populate:"buddy"})
+    }).populate({path:"buddyRequest",select:"people status totalCost", populate:{path:"buddy", select:"name email"}}).select("title from destination availableSeats")
 
 
     return res;

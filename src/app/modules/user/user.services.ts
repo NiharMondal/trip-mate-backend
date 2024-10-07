@@ -36,8 +36,8 @@ const updateIntoDB = async(id:string, payload: Partial<IUser>)=>{
 }
 
 
-const myOutCommingRequest = async(id:string)=>{
-    const res = await User.findById(id).populate("buddyRequest");
+const outGoingRequest = async(id:string)=>{
+    const res = await User.findById(id).populate("buddyRequest").select("buddyRequest");
 
     return res;
 }
@@ -48,5 +48,5 @@ export const userServices = {
     getById,
     deleteFromDB,
     updateIntoDB,
-    myOutCommingRequest
+    outGoingRequest
 }

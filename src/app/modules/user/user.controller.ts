@@ -61,9 +61,9 @@ const updateIntoDB = asyncHandler(async(req:Request, res:Response)=>{
 });
 
 
-const myOutCommingRequest = asyncHandler(async(req:Request, res:Response)=>{
-    const {id} = req.params;
-    const result = await userServices.myOutCommingRequest(id);
+const outGoingRequest = asyncHandler(async(req:Request, res:Response)=>{
+    const {userId} = req.params;
+    const result = await userServices.outGoingRequest(userId);
 
 
     sendResponse(res, {
@@ -78,5 +78,5 @@ export const userController = {
     getById,
     deleteFromDB,
     updateIntoDB,
-    myOutCommingRequest
+    outGoingRequest
 }

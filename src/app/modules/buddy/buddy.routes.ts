@@ -8,5 +8,6 @@ router.get("/:tripId", buddyController.getById);
 //admin
 router.get("/request/admin", buddyController.getAllFromDB)
 
+router.get("/outgoing-request/:userId", buddyController.outGoingRequest);
 
 export const buddyRoutes = router;

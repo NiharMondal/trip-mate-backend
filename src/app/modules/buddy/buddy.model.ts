@@ -7,13 +7,13 @@ const buddySchema = new Schema<IBuddyRequest>({
         required: true,
         ref: "Trip"
     },
-    buddy : [
+    buddy : 
         {
             type: Schema.Types.ObjectId,
             required:true,
             ref: "User"
         }
-    ],
+    ,
     people:{
         type: Number,
         default: 1

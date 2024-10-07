@@ -71,10 +71,25 @@ const updateIntoDB = asyncHandler(async(req:Request, res:Response)=>{
         result: result
     })
 });
+
+
+//my outgoing request
+const outGoingRequest = asyncHandler(async(req:Request, res:Response)=>{
+    const {userId} = req.params;
+    const result = await buddyServices.outGoingRequest(userId);
+
+
+    sendResponse(res, {
+        statusCode:200,
+        message: "Data updated successfully",
+        result: result
+    })
+});
 export const buddyController = {
     insertIntoDB,
     getAllFromDB,
     getById,
     deleteFromDB,
-    updateIntoDB
+    updateIntoDB,
+    outGoingRequest
 }

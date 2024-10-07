@@ -1,15 +1,13 @@
 
 import Trip from "../trip/trip.model";
-import User from "../user/user.model";
 import { IBuddyRequest } from "./buddy.interface";
 import Buddy from "./buddy.model";
 
 
 const insertIntoDB = async(payload: IBuddyRequest)=>{
     //create doc
-    const res = await Buddy.create(payload)
+    const res = await Buddy.create(payload);
 
-    await User.findByIdAndUpdate({_id: res.buddy},{$push:{buddyRequest: res._id}});
     await Trip.findByIdAndUpdate({_id: res.trip},{$push:{buddyRequest: res._id}});
     return res;
 };
@@ -47,6 +45,16 @@ const updateIntoDB = async(id:string, payload: Partial<IBuddyRequest>)=>{
     return res;
 }
 
+const outGoingRequest = async(id:string)=>{
+    const res = await Buddy.find({buddy: id}).populate({path:"trip", select:"title startDate endDate user", populate:{
+        path: "user",
+        select: "name"
+    }});
+
+    return res;
+}
+
+
 
 
 export const buddyServices = {
@@ -54,5 +62,7 @@ export const buddyServices = {
     getAllFromDB,
     getById,
     deleteFromDB,
-    updateIntoDB
+    updateIntoDB,
+    outGoingRequest,
+    
 }

@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import { IUser } from "./user.interface";
+import { IUser, ROLE } from "./user.interface";
 import { hashPassword } from "../../../helpers/hashPasword";
 
 
@@ -18,8 +18,30 @@ const userSchema = new Schema<IUser>({
     password: {
         type: String,
         required: [true, "Password is required"],
-    }
-});
+    },
+    role: {
+        type: String,
+        enum: ROLE,
+        default: "user"
+    },
+    avatar: String,
+    profile:{
+        age: String,
+        bio: String
+    },
+    trips: [
+        {
+            type: Schema.Types.ObjectId,
+            ref:"Trip"
+        }
+    ],
+    buddyRequest: [
+        {
+            type: Schema.Types.ObjectId,
+            ref:"Buddy"
+        }
+    ]
+},{timestamps:true});
 
 
 userSchema.pre("save", async function () {

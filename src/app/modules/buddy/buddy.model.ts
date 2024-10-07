@@ -1,23 +1,35 @@
 import { model, Schema } from "mongoose";
-import { IBuddyRequest } from "./buddy.interface";
+import { IBuddyRequest, Status } from "./buddy.interface";
 
 const buddySchema = new Schema<IBuddyRequest>({
-    tripId :{
-        type: Schema.ObjectId,
+    trip : {
+        type: Schema.Types.ObjectId,
         required: true,
         ref: "Trip"
     },
-    userId :{
-        type: Schema.ObjectId,
-        required: true,
-        ref: "User"
-    },
-    needSeats:{
+    buddy : [
+        {
+            type: Schema.Types.ObjectId,
+            required:true,
+            ref: "User"
+        }
+    ],
+    people:{
         type: Number,
-        required: true,
+        default: 1
     },
+    status: {
+        type: String,
+        enum: Status,
+        default: "PENDING"
+    },
+    totalCost: {
+        type: Number,
+        required:true,
+
+    }
     
-});
+},{timestamps: true});
 
 
 

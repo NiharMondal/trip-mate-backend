@@ -1,7 +1,10 @@
 import { createSlug } from "../../../helpers/createSlug";
+import User from "../user/user.model";
 import { ITrip } from "./trip.interface";
 import Trip from "./trip.model";
 
+
+//admin or user
 const insertIntoDB = async(payload: ITrip)=>{
     //create slug
     const slug = createSlug(payload.title)
@@ -10,18 +13,22 @@ const insertIntoDB = async(payload: ITrip)=>{
     const res = await Trip.create({
         ...payload,
         slug
-    })
+    });
+
+    await User.findByIdAndUpdate({_id: res.user},{$push:{trips: res._id}})
 
     return res;
 };
 
+
+// admin
 const getAllFromDB = async()=>{
 
-    const res = await Trip.find();
+    const res = await Trip.find().populate("user","name email").populate("buddyRequest");
     return res;
 }
 
-//find by slug
+//find by slug --> admin/user
 const getBySlug = async(slug: string)=>{
 
     const res = await Trip.findOne({
@@ -31,7 +38,7 @@ const getBySlug = async(slug: string)=>{
 }
 
 
-//delete by ID
+//delete by ID --> admin/user
 const deleteFromDB = async(id: string)=>{
 
     const res = await Trip.findByIdAndDelete(id)
@@ -39,7 +46,7 @@ const deleteFromDB = async(id: string)=>{
 }
 
 
-
+//update by ID --> admin/user
 const updateIntoDB = async(id:string, payload: Partial<ITrip>)=>{
     const res = await Trip.findByIdAndUpdate(id, {$set:{
         ...payload
@@ -49,11 +56,22 @@ const updateIntoDB = async(id:string, payload: Partial<ITrip>)=>{
 }
 
 
+// get trip by user --> user
+const getMyTrips = async(userId: string)=>{
+
+    const res = await Trip.find({
+        user: userId
+    }).populate({path:"buddyRequest", populate:"buddy"})
+
+
+    return res;
+}
 
 export const tripServices = {
     insertIntoDB,
     getAllFromDB,
     getBySlug,
     deleteFromDB,
-    updateIntoDB
+    updateIntoDB,
+    getMyTrips
 }

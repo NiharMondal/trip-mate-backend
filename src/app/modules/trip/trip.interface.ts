@@ -1,11 +1,15 @@
+import { Types } from "mongoose";
+
 export interface ITrip {
     title: string;
     from: string;
     destination: string;
-    photo: string;
-    seats: number;
+    photos: string[];
+    availAbleSeats: number;
     slug: string;
     startDate: string;
     endDate: string;
     details: string;
+    user: Types.ObjectId;
+    buddyRequest: Types.ObjectId;
 }

@@ -4,7 +4,7 @@ import { ITrip } from "./trip.interface";
 
 
 const tripSchema = new Schema<ITrip>({
-    
+
     title: {
         type: String,
         required: [true, "Title is required"],
@@ -19,11 +19,11 @@ const tripSchema = new Schema<ITrip>({
         type: String,
         required: [true, "Destination is required"],
     },
-    photo: {
-        type: String,
+    photos: {
+        type: [String],
         required: [true, "Photo URL is required"],
     },
-    seats:{
+    availAbleSeats:{
         type: Number,
         default: 20,
     },
@@ -41,12 +41,22 @@ const tripSchema = new Schema<ITrip>({
     details: {
         type: String,
         required: [true, "End date required"],
-    }
+    },
+    user:{
+        type: Schema.Types.ObjectId,
+        required:true,
+        ref:"User"
+    },
+    buddyRequest:[{
+        type: Schema.Types.ObjectId,
+        required:true,
+        ref:"Buddy"
+    }]
 
 },{timestamps:true});
 
 
-const Trip = model<ITrip>("Trip", tripSchema);
+const Trip =  model<ITrip>("Trip", tripSchema);
 
 export default Trip;
 

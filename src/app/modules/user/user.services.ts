@@ -4,16 +4,16 @@ import User from "./user.model";
 
 
 
+//admin
 const getAllFromDB = async()=>{
-
-    const res = await User.find().select("-password -__v");
+    const res = await User.find().select("-password -__v")
     return res;
 }
 
 //find by id
 const getById = async(id: string)=>{
 
-    const res = await User.findById(id).select("-password -__v");
+    const res = await User.findById(id).select("name email avatar")
     return res;
 }
 
@@ -36,10 +36,17 @@ const updateIntoDB = async(id:string, payload: Partial<IUser>)=>{
 }
 
 
+const myOutCommingRequest = async(id:string)=>{
+    const res = await User.findById(id).populate("buddyRequest");
+
+    return res;
+}
+
 
 export const userServices = {
     getAllFromDB,
     getById,
     deleteFromDB,
-    updateIntoDB
+    updateIntoDB,
+    myOutCommingRequest
 }

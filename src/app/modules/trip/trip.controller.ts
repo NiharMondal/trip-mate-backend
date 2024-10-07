@@ -71,10 +71,25 @@ const updateIntoDB = asyncHandler(async(req:Request, res:Response)=>{
         result: result
     })
 });
+
+
+//get all trip by userId
+const getMyTrips = asyncHandler(async(req:Request, res:Response)=>{
+    const {userId} = req.params;
+    const result = await tripServices.getMyTrips(userId);
+
+
+    sendResponse(res, {
+        statusCode:200,
+        message: "Data fetched successfully",
+        result: result
+    })
+});
 export const tripController = {
     insertIntoDB,
     getAllFromDB,
     getBySlug,
     deleteFromDB,
-    updateIntoDB
+    updateIntoDB,
+    getMyTrips
 }

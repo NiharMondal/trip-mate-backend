@@ -18,7 +18,7 @@ const insertIntoDB = asyncHandler(async(req:Request, res:Response)=>{
 });
 
 
-//get all trip
+//get all trip - admin
 const getAllFromDB = asyncHandler(async(req:Request, res:Response)=>{
 
     const result = await buddyServices.getAllFromDB();
@@ -32,10 +32,10 @@ const getAllFromDB = asyncHandler(async(req:Request, res:Response)=>{
 });
 
 
-//get single data by slug
-const getBySlug = asyncHandler(async(req:Request, res:Response)=>{
-    const {slug} = req.params;
-    const result = await buddyServices.getBySlug(slug);
+//get single data by id
+const getById = asyncHandler(async(req:Request, res:Response)=>{
+    const {tripId} = req.params;
+    const result = await buddyServices.getById(tripId);
 
 
     sendResponse(res, {
@@ -74,7 +74,7 @@ const updateIntoDB = asyncHandler(async(req:Request, res:Response)=>{
 export const buddyController = {
     insertIntoDB,
     getAllFromDB,
-    getBySlug,
+    getById,
     deleteFromDB,
     updateIntoDB
 }

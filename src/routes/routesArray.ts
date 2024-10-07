@@ -6,7 +6,7 @@ import { userRoutes } from "../app/modules/user/user.routes";
 export const routesArray = [
     {path: "/user", route: userRoutes},
     {path: "/trip", route: tourRoutes},
-    {path: "/buddy-request", route: buddyRoutes},
+    {path: "/buddy", route: buddyRoutes},
     {path: "/auth", route: authRoutes},
     
 ]

@@ -59,10 +59,24 @@ const updateIntoDB = asyncHandler(async(req:Request, res:Response)=>{
         result: result
     })
 });
+
+
+const myOutCommingRequest = asyncHandler(async(req:Request, res:Response)=>{
+    const {id} = req.params;
+    const result = await userServices.myOutCommingRequest(id);
+
+
+    sendResponse(res, {
+        statusCode:200,
+        message: "Data fetched successfully",
+        result: result
+    })
+});
 export const userController = {
     
     getAllFromDB,
     getById,
     deleteFromDB,
-    updateIntoDB
+    updateIntoDB,
+    myOutCommingRequest
 }

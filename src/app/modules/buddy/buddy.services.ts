@@ -1,29 +1,31 @@
-import { createSlug } from "../../../helpers/createSlug";
+
+import Trip from "../trip/trip.model";
+import User from "../user/user.model";
 import { IBuddyRequest } from "./buddy.interface";
 import Buddy from "./buddy.model";
 
 
 const insertIntoDB = async(payload: IBuddyRequest)=>{
-    
-
     //create doc
     const res = await Buddy.create(payload)
 
+    await User.findByIdAndUpdate({_id: res.buddy},{$push:{buddyRequest: res._id}});
+    await Trip.findByIdAndUpdate({_id: res.trip},{$push:{buddyRequest: res._id}});
     return res;
 };
 
+//admin
 const getAllFromDB = async()=>{
 
-    const res = await Buddy.find();
+    const res = await Buddy.find()
     return res;
 }
 
-//find by slug
-const getBySlug = async(slug: string)=>{
+//find buddy request using userId -> user/admin
 
-    const res = await Buddy.findOne({
-        slug
-    });
+const getById = async(id: string)=>{
+
+    const res = await Buddy.findOne({tripId:id}).populate('buddy');
     return res;
 }
 
@@ -50,7 +52,7 @@ const updateIntoDB = async(id:string, payload: Partial<IBuddyRequest>)=>{
 export const buddyServices = {
     insertIntoDB,
     getAllFromDB,
-    getBySlug,
+    getById,
     deleteFromDB,
     updateIntoDB
 }

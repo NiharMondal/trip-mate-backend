@@ -1,15 +1,12 @@
 import app from "./app";
 import mongoose from "mongoose";
-import  {envConfig}  from "./config";
+import { envConfig } from "./config";
 import { Server } from "http";
-
 
 let server: Server;
 
-
-async function main(){
-
-    try {
+async function main() {
+	try {
 		await mongoose.connect(envConfig.database_url as string);
 
 		server = app.listen(envConfig.port, () => {

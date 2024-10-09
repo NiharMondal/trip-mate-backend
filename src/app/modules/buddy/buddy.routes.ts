@@ -3,11 +3,8 @@ import { buddyController } from "./buddy.controller";
 
 const router = Router()
 
-router.post("/:tripId/request",buddyController.insertIntoDB);
-router.get("/:tripId", buddyController.getById);
-//admin
-router.get("/request/admin", buddyController.getAllFromDB)
-
-router.get("/outgoing-request/:userId", buddyController.outGoingRequest);
-
-export const buddyRoutes = router;
+router.post("/:tripId/request", buddyController.requestToJoin);
+router.get("/user/:userId/requests/outgoing", buddyController.getOutgoingRequests)
+router.get("/user/:userId/requests/incomming", buddyController.getIncommingRequests)
+router.patch("/trip/:requestId/update", buddyController.updateRequestStatus)
+export const buddyRequestRoutes = router;

@@ -1,77 +1,93 @@
-import { createSlug } from "../../../helpers/createSlug";
+import Destination from "../destination/destination.model";
 import User from "../user/user.model";
 import { ITrip } from "./trip.interface";
 import Trip from "./trip.model";
-
+import CustomError from "../../utils/CustomeError";
+import { generateSlug } from "../../../helpers/createSlug";
 
 //admin or user
-const insertIntoDB = async(payload: ITrip)=>{
-    //create slug
-    const slug = createSlug(payload.title)
+const insertIntoDB = async (payload: ITrip) => {
+	//checking destination
+	const destination = await Destination.findOne({
+		destination: payload.destination,
+	});
 
-    //create doc
-    const res = await Trip.create({
-        ...payload,
-        slug
-    });
+	if (!destination) {
+		throw new CustomError(404, "Destination is not defined");
+	}
 
-    await User.findByIdAndUpdate({_id: res.user},{$push:{trips: res._id}})
+	//checking user
+	const user = await User.findById(payload.user);
+	if (!user) {
+		throw new CustomError(404, "User ID is not valid");
+	}
 
-    return res;
+	//generating slug
+	const slug = generateSlug(payload.title);
+
+	//creating trip
+	const res = await Trip.create({ ...payload, slug });
+
+	return res;
 };
 
+// public
+const getAllFromDB = async () => {
+	const res = await Trip.find()
+		.populate("user", "name email")
+		
+	return res;
+};
 
-// admin
-const getAllFromDB = async()=>{
-
-    const res = await Trip.find().populate("user","name email").populate("buddyRequest");
-    return res;
-}
-
-//find by slug --> admin/user
-const getBySlug = async(slug: string)=>{
-
-    const res = await Trip.findOne({
-        slug
-    });
-    return res;
-}
-
+//find by slug --> public
+const getBySlug = async (slug: string) => {
+	const res = await Trip.findOne({
+		slug,
+	});
+	return res;
+};
 
 //delete by ID --> admin/user
-const deleteFromDB = async(id: string)=>{
-
-    const res = await Trip.findByIdAndDelete(id)
-    return res;
-}
-
+const deleteFromDB = async (id: string) => {
+	const res = await Trip.findByIdAndDelete(id);
+	return res;
+};
 
 //update by ID --> admin/user
-const updateIntoDB = async(id:string, payload: Partial<ITrip>)=>{
-    const res = await Trip.findByIdAndUpdate(id, {$set:{
-        ...payload
-    }},{new:true});
+const updateIntoDB = async (id: string, payload: Partial<ITrip>) => {
+	const res = await Trip.findByIdAndUpdate(
+		id,
+		{
+			$set: {
+				...payload,
+			},
+		},
+		{ new: true }
+	);
 
-    return res;
-}
-
+	return res;
+};
 
 // get trip by user --> user
-const getMyTrips = async(userId: string)=>{
+const getMyTrips = async (userId: string) => {
+	const res = await Trip.find({
+		user: userId,
+	})
+		.populate({
+			path: "buddyRequest",
+			select: "people status totalCost",
+			populate: { path: "buddy", select: "name email" },
+		})
+		.select("title from destination availableSeats");
 
-    const res = await Trip.find({
-        user: userId
-    }).populate({path:"buddyRequest",select:"people status totalCost", populate:{path:"buddy", select:"name email"}}).select("title from destination availableSeats")
-
-
-    return res;
-}
+	return res;
+};
 
 export const tripServices = {
-    insertIntoDB,
-    getAllFromDB,
-    getBySlug,
-    deleteFromDB,
-    updateIntoDB,
-    getMyTrips
-}
+	insertIntoDB,
+	getAllFromDB,
+	getBySlug,
+	deleteFromDB,
+	updateIntoDB,
+	getMyTrips,
+};

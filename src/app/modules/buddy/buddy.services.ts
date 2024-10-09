@@ -1,68 +1,71 @@
-
+import CustomError from "../../utils/CustomeError";
 import Trip from "../trip/trip.model";
 import { IBuddyRequest } from "./buddy.interface";
 import Buddy from "./buddy.model";
 
+//make a request to join
+const requestToJoin = async (payload: IBuddyRequest) => {
+	//create doc
+	const res = await Buddy.create(payload);
 
-const insertIntoDB = async(payload: IBuddyRequest)=>{
-    //create doc
-    const res = await Buddy.create(payload);
-
-    await Trip.findByIdAndUpdate({_id: res.trip},{$push:{buddyRequest: res._id}});
-    return res;
+	await Trip.findByIdAndUpdate(res.trip, {
+		$push: { buddyRequest: res._id },
+	});
+	return res;
 };
 
-//admin
-const getAllFromDB = async()=>{
+// get outgoing requests (tours the user has requested to join)
+const getOutgoingRequests = async (userId: string) => {
+	const res = await Buddy.find({ buddy: userId })
+		.populate({
+			path: "trip",
+			select: "title startDate endDate",
+			populate: {
+				path: "user",
+				select: "name email",
+			},
+		})
+		.select("_id status totalCost");
 
-    const res = await Buddy.find()
-    return res;
-}
+	return res;
+};
 
-//find buddy request using userId -> user/admin
+//get incomming requests for the user's trip's
+const getIncommingRequests = async (userId: string) => {
+	const res = await Trip.find({ user: userId })
+		.populate({
+			path: "buddyRequest",
+			select: "people status totalCost",
+			populate: {
+				path: "buddy",
+				select: "name",
+			},
+		})
+		.select("title startDate endDate availAbleSeats");
 
-const getById = async(id: string)=>{
+	return res;
+};
 
-    const res = await Buddy.findOne({tripId:id}).populate('buddy');
-    return res;
-}
+//approve or reject a request
+const updateRequestStatus = async (
+	requestId: string,
+	payload: { status: string, userId:string }
+) => {
+	const buddyRequest = await Buddy.findOne({ _id: requestId, buddy: payload.userId });
 
+	if (!buddyRequest) {
+		throw new CustomError(404, "Requested trip mate not found!");
+	}
 
-//delete by ID
-const deleteFromDB = async(id: string)=>{
-
-    const res = await Buddy.findByIdAndDelete(id)
-    return res;
-}
-
-
-
-const updateIntoDB = async(id:string, payload: Partial<IBuddyRequest>)=>{
-    const res = await Buddy.findByIdAndUpdate(id, {$set:{
-        ...payload
-    }},{new:true});
-
-    return res;
-}
-
-const outGoingRequest = async(id:string)=>{
-    const res = await Buddy.find({buddy: id}).populate({path:"trip", select:"title startDate endDate user", populate:{
-        path: "user",
-        select: "name"
-    }});
-
-    return res;
-}
-
-
-
+	const res = await Buddy.findByIdAndUpdate(requestId, {
+		$set: { status: payload.status },
+	},{new:true});
+	return res;
+};
 
 export const buddyServices = {
-    insertIntoDB,
-    getAllFromDB,
-    getById,
-    deleteFromDB,
-    updateIntoDB,
-    outGoingRequest,
-    
-}
+	requestToJoin,
+	getOutgoingRequests,
+	getIncommingRequests,
+	updateRequestStatus,
+};

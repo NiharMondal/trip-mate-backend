@@ -5,7 +5,6 @@ import { hashPassword } from "../../../helpers/hashPasword";
 
 
 const userSchema = new Schema<IUser>({
-    
     name: {
         type: String,
         required: [true, "Name is required"],
@@ -29,18 +28,6 @@ const userSchema = new Schema<IUser>({
         age: String,
         bio: String
     },
-    trips: [
-        {
-            type: Schema.Types.ObjectId,
-            ref:"Trip"
-        }
-    ],
-    buddyRequest: [
-        {
-            type: Schema.Types.ObjectId,
-            ref:"Buddy"
-        }
-    ]
 },{timestamps:true});
 
 

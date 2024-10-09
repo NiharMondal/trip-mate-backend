@@ -1,10 +1,16 @@
 import { Router } from "express";
 import { userController } from "./user.controller";
 
-const router  = Router()
+const router = Router();
 
 router.route("/").get(userController.getAllFromDB);
-router.get("/out-going-request/:userId", userController.outGoingRequest)
-router.route("/:id").get(userController.getById).patch(userController.updateIntoDB).delete(userController.deleteFromDB)
+router.get("/:userId/outgoing", userController.getOutGoingRequest);
+router.get("/:userId/incomming", userController.getIncommingRequests);
 
-export const userRoutes =  router;
+router
+	.route("/:id")
+	.get(userController.getById)
+	.patch(userController.updateIntoDB)
+	.delete(userController.deleteFromDB);
+
+export const userRoutes = router;

@@ -1,15 +1,28 @@
 import { Request, Response } from "express";
 import asyncHandler from "../../utils/asyncHandler";
+
 import sendResponse from "../../utils/sendResponse";
-import { userServices } from "./user.services";
+import { destinationServices } from "./destination.services";
 
 
+//create trip
+const insertIntoDB = asyncHandler(async(req:Request, res:Response)=>{
+
+    const result = await destinationServices.insertIntoDB(req.body);
 
 
-//get all user
+    sendResponse(res, {
+        statusCode:201,
+        message: "Data created successfully",
+        result: result
+    })
+});
+
+
+//get all trip
 const getAllFromDB = asyncHandler(async(req:Request, res:Response)=>{
 
-    const result = await userServices.getAllFromDB();
+    const result = await destinationServices.getAllFromDB();
 
 
     sendResponse(res, {
@@ -23,7 +36,7 @@ const getAllFromDB = asyncHandler(async(req:Request, res:Response)=>{
 //get single data by id
 const getById = asyncHandler(async(req:Request, res:Response)=>{
     const {id} = req.params;
-    const result = await userServices.getById(id);
+    const result = await destinationServices.getById(id);
 
 
     sendResponse(res, {
@@ -34,10 +47,10 @@ const getById = asyncHandler(async(req:Request, res:Response)=>{
 });
 
 
-//delete single data by id
+//update single data by id
 const deleteFromDB = asyncHandler(async(req:Request, res:Response)=>{
     const {id} = req.params;
-    const result = await userServices.deleteFromDB(id);
+    const result = await destinationServices.deleteFromDB(id);
 
 
     sendResponse(res, {
@@ -50,7 +63,7 @@ const deleteFromDB = asyncHandler(async(req:Request, res:Response)=>{
 
 const updateIntoDB = asyncHandler(async(req:Request, res:Response)=>{
     const {id} = req.params;
-    const result = await userServices.updateIntoDB(id, req.body);
+    const result = await destinationServices.updateIntoDB(id, req.body);
 
 
     sendResponse(res, {
@@ -61,35 +74,11 @@ const updateIntoDB = asyncHandler(async(req:Request, res:Response)=>{
 });
 
 
-const getOutGoingRequest = asyncHandler(async (req: Request, res: Response) => {
-	const { userId } = req.params;
-	const result = await userServices.getOutGoingRequest(userId);
-
-	sendResponse(res, {
-		statusCode: 200,
-		message: "Data fetched successfully",
-		result: result,
-	});
-});
-
-
-const getIncommingRequests = asyncHandler(async (req: Request, res: Response) => {
-	const { userId } = req.params;
-	const result = await userServices.getIncommingRequests(userId);
-
-	sendResponse(res, {
-		statusCode: 200,
-		message: "Data fetched successfully",
-		result: result,
-	});
-});
-
-
-export const userController = {
-	getAllFromDB,
-	getById,
-	deleteFromDB,
-	updateIntoDB,
-	getOutGoingRequest,
-	getIncommingRequests,
-};
+export const destinationController = {
+    insertIntoDB,
+    getAllFromDB,
+    getById,
+    deleteFromDB,
+    updateIntoDB,
+    
+}

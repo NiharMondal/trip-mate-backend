@@ -6,6 +6,7 @@ export interface ITrip {
     destination: string;
     photos: string[];
     availAbleSeats: number;
+    budget: number;
     slug: string;
     startDate: string;
     endDate: string;

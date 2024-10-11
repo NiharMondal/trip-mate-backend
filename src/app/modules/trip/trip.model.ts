@@ -27,6 +27,10 @@ const tripSchema = new Schema<ITrip>({
         type: Number,
         default: 20,
     },
+    budget:{
+        type: Number,
+        required:true,
+    },
     startDate:{
         type:  String,
         required:[true, "Start date is required"]

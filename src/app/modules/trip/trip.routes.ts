@@ -11,5 +11,5 @@ router.route("/:slug").get(tripController.getBySlug)
 router.route("/:id").patch(tripController.updateIntoDB).delete(tripController.deleteFromDB)
 
 router.route("/my-trip/:userId").get(tripController.getMyTrips)
-
+router.get("/popular-trip", tripController.getMyTrips)
 export const tourRoutes =  router;

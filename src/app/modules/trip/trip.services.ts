@@ -28,14 +28,19 @@ const insertIntoDB = async (payload: ITrip) => {
 	//creating trip
 	const res = await Trip.create({ ...payload, slug });
 
+	// inserting trip _id to destination collection
+	await Destination.findOneAndUpdate(
+		{ destination: payload.destination },
+		{ $push: { trips: res._id } }
+	);
+	
 	return res;
 };
 
 // public
 const getAllFromDB = async () => {
-	const res = await Trip.find()
-		.populate("user", "name email")
-		
+	const res = await Trip.find().populate("user", "name email");
+
 	return res;
 };
 

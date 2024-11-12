@@ -1,20 +1,20 @@
-import { generateSlug } from "../../../helpers/createSlug";
+import { generateSlug } from "../../helpers/createSlug";
 import { IDestination } from "./destination.interface";
 import Destination from "./destination.model";
 
 // only admin can create this
 const insertIntoDB = async (payload: IDestination) => {
 	const slug = generateSlug(payload.destination);
-	//create doc
+
 	const res = await Destination.create({ ...payload, slug });
-	
-	return res
+
+	return res;
 };
 
 // admin
 const getAllFromDB = async () => {
-	const res = await Destination.find({}, "destination slug trips");
-	
+	const res = await Destination.find({});
+
 	return res;
 };
 
@@ -39,7 +39,7 @@ const updateIntoDB = async (id: string, payload: Partial<IDestination>) => {
 				...payload,
 			},
 		},
-		{ new: true }
+		{ new: true, runValidators: true }
 	);
 
 	return res;

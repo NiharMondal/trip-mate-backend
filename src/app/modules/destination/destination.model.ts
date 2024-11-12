@@ -1,6 +1,6 @@
 import { model, Schema } from "mongoose";
 import { IDestination } from "./destination.interface";
-import { generateSlug } from "../../../helpers/createSlug";
+
 
 const destinationSchema = new Schema<IDestination>(
 	{
@@ -8,6 +8,10 @@ const destinationSchema = new Schema<IDestination>(
 			type: String,
 			required: true,
 			unique: true,
+		},
+		shortInfo:{
+			type: String,
+			required:true
 		},
 		slug: {
 			type: String,

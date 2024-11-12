@@ -1,15 +1,32 @@
 import { Router } from "express";
 import { tripController } from "./trip.controller";
 
-const router  = Router()
+const router = Router();
 
-router.route("/").post(tripController.insertIntoDB).get(tripController.getAllFromDB)
-//by slug
-router.route("/:slug").get(tripController.getBySlug)
+// freshly added 
+router.get("/freshly-added", tripController.freshlyAdded);
 
-//needs checking
-router.route("/:id").patch(tripController.updateIntoDB).delete(tripController.deleteFromDB)
+// popular trip
+router.get("/popular-trip", tripController.getMyTrips);
 
-router.route("/my-trip/:userId").get(tripController.getMyTrips)
-router.get("/popular-trip", tripController.getMyTrips)
+// by slug
+router.get("/:slug", tripController.getBySlug);
+
+// protected: admin - user
+router
+	.route("/:id")
+	.patch(tripController.updateIntoDB)
+	.delete(tripController.deleteFromDB);
+
+// my trips (user-based)
+router.route("/my-trip/:userId").get(tripController.getMyTrips);
+
+// general route for all trips (must come last to avoid conflicts)
+router
+	.route("/")
+	.post(tripController.insertIntoDB)
+	.get(tripController.getAllFromDB);
+
+
+
 export const tourRoutes =  router;

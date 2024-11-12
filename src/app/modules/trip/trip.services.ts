@@ -3,13 +3,15 @@ import User from "../user/user.model";
 import { ITrip } from "./trip.interface";
 import Trip from "./trip.model";
 import CustomError from "../../utils/CustomeError";
-import { generateSlug } from "../../../helpers/createSlug";
+import { generateSlug } from "../../helpers/createSlug";
+import QueryBuilder from "../../helpers/QueryBuilder";
+import mongoose from "mongoose";
 
 //admin or user
 const insertIntoDB = async (payload: ITrip) => {
 	//checking destination
 	const destination = await Destination.findOne({
-		destination: payload.destination,
+		slug: payload.destination,
 	});
 
 	if (!destination) {
@@ -19,29 +21,53 @@ const insertIntoDB = async (payload: ITrip) => {
 	//checking user
 	const user = await User.findById(payload.user);
 	if (!user) {
-		throw new CustomError(404, "User ID is not valid");
+		throw new CustomError(401, "User ID is not valid");
 	}
 
 	//generating slug
 	const slug = generateSlug(payload.title);
 
-	//creating trip
-	const res = await Trip.create({ ...payload, slug });
+	const session = await mongoose.startSession();
+	try {
+		session.startTransaction();
+		//creating trip
+		const res = await Trip.create([{ ...payload, slug }], { session });
 
-	// inserting trip _id to destination collection
-	await Destination.findOneAndUpdate(
-		{ destination: payload.destination },
-		{ $push: { trips: res._id } }
-	);
-	
-	return res;
+		// inserting trip _id to destination collection
+		await Destination.findOneAndUpdate(
+			{ slug: payload.destination },
+			{ $push: { trips: res[0]._id } },
+			{ session }
+		);
+		await session.commitTransaction();
+		await session.endSession();
+		return res[0];
+	} catch (error) {
+		await session.abortTransaction();
+		await session.endSession();
+		throw new CustomError(400, "Something went wrong");
+	}
 };
 
-// public
-const getAllFromDB = async () => {
-	const res = await Trip.find().populate("user", "name email");
+// get all trip --> public
+const getAllFromDB = async (query: Record<string, string | unknown>) => {
+	const data = new QueryBuilder(
+		Trip.find().populate("user", "name -_id"),
+		query
+	)
+		.search(["title", "destination"])
+		.filter()
+		.budget()
+		.sort()
+		.paginate();
 
-	return res;
+	const res = await data.queryModel;
+	const metaData = await data.countTotal();
+
+	return {
+		res,
+		metaData,
+	};
 };
 
 //find by slug --> public
@@ -52,9 +78,11 @@ const getBySlug = async (slug: string) => {
 	return res;
 };
 
-//delete by ID --> admin/user
+//soft delete --> admin/user
 const deleteFromDB = async (id: string) => {
-	const res = await Trip.findByIdAndDelete(id);
+	const res = await Trip.findByIdAndUpdate(id, {
+		isDeleted: true,
+	});
 	return res;
 };
 
@@ -88,6 +116,12 @@ const getMyTrips = async (userId: string) => {
 	return res;
 };
 
+//freshly added -> public
+const freshlyAdded = async () => {
+	const res = await Trip.find({}).limit(4).sort({ createdAt: "desc" });
+	
+	return res;
+};
 export const tripServices = {
 	insertIntoDB,
 	getAllFromDB,
@@ -95,4 +129,7 @@ export const tripServices = {
 	deleteFromDB,
 	updateIntoDB,
 	getMyTrips,
+
+	//extra services
+	freshlyAdded,
 };

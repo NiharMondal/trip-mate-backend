@@ -3,7 +3,7 @@ export const Status = ["PENDING", "ACCEPTED", "REJECTED"];
 
 export interface IBuddyRequest {
 	trip: Types.ObjectId;
-	buddy: Types.ObjectId;
+	user: Types.ObjectId;
 	people: number;
 	status: "PENDING" | "ACCEPTED" | "REJECTED";
 	totalCost: number;

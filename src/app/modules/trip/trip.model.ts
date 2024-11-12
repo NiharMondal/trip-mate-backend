@@ -55,7 +55,11 @@ const tripSchema = new Schema<ITrip>({
         type: Schema.Types.ObjectId,
         required:true,
         ref:"Buddy"
-    }]
+    }],
+    isDeleted: {
+        type: Boolean,
+        default: false
+    }
 
 },{timestamps:true});
 

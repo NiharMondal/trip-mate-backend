@@ -7,7 +7,7 @@ let server: Server;
 
 async function main() {
 	try {
-		await mongoose.connect(envConfig.database_url as string);
+		await mongoose.connect(envConfig.mongo_uri as string);
 
 		server = app.listen(envConfig.port, () => {
 			console.log(

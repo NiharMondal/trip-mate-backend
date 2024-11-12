@@ -13,4 +13,5 @@ export interface ITrip {
     details: string;
     user: Types.ObjectId;
     buddyRequest: Types.ObjectId;
+    isDeleted: boolean
 }

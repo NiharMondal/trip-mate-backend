@@ -7,7 +7,8 @@ const buddySchema = new Schema<IBuddyRequest>({
         required: true,
         ref: "Trip"
     },
-    buddy: 
+    
+    user: 
         {
             type: Schema.Types.ObjectId,
             required:true,

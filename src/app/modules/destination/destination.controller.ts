@@ -33,6 +33,20 @@ const getAllFromDB = asyncHandler(async(req:Request, res:Response)=>{
 });
 
 
+//get single data by slug
+const getBySlug = asyncHandler(async(req:Request, res:Response)=>{
+    const {slug} = req.params;
+    const result = await destinationServices.getBySlug(slug);
+
+
+    sendResponse(res, {
+        statusCode:200,
+        message: "Data fetched successfully",
+        result: result
+    })
+});
+
+
 //get single data by id
 const getById = asyncHandler(async(req:Request, res:Response)=>{
     const {id} = req.params;
@@ -78,6 +92,7 @@ export const destinationController = {
     insertIntoDB,
     getAllFromDB,
     getById,
+    getBySlug,
     deleteFromDB,
     updateIntoDB,
     

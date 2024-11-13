@@ -16,6 +16,10 @@ router
 	)
 	.get(destinationController.getAllFromDB);
 
+//get destination by slug
+router.get("/:slug",destinationController.getBySlug);
+
+
 router
 	.route("/:id")
 	.get(destinationController.getById)

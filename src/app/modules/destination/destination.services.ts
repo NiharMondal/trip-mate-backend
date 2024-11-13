@@ -18,9 +18,15 @@ const getAllFromDB = async () => {
 	return res;
 };
 
-//find by id --> admin
+//find by id 
 const getById = async (id: string) => {
 	const res = await Destination.findById(id);
+	return res;
+};
+//find by slug
+const getBySlug = async (slug: string) => {
+	const res = await Destination.findOne({slug: slug}).populate("trips");
+
 	return res;
 };
 
@@ -49,6 +55,7 @@ export const destinationServices = {
 	insertIntoDB,
 	getAllFromDB,
 	getById,
+	getBySlug,
 	deleteFromDB,
 	updateIntoDB,
 };

@@ -52,7 +52,16 @@ const insertIntoDB = async (payload: ITrip) => {
 // get all trip --> public
 const getAllFromDB = async (query: Record<string, string | unknown>) => {
 	const data = new QueryBuilder(
-		Trip.find().populate("user", "name -_id"),
+		Trip.find()
+			.populate("user", "name -_id")
+			.populate({
+				path: "reviews",
+				select: "rating message userId",
+				populate: {
+					path: "userId",
+					select: "name",
+				},
+			}),
 		query
 	)
 		.search(["title", "destination"])
@@ -118,9 +127,13 @@ const getMyTrips = async (userId: string) => {
 
 //freshly added -> public
 const freshlyAdded = async () => {
-	const res = await Trip.find({}).limit(4).sort({ createdAt: "desc" });
-	
+	const res = await Trip.find({}).limit(9).sort({ createdAt: "desc" });
+
 	return res;
+};
+
+const popularTrip = async () => {
+	const res = await Trip.find({});
 };
 export const tripServices = {
 	insertIntoDB,

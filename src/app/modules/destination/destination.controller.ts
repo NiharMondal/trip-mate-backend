@@ -21,8 +21,8 @@ const insertIntoDB = asyncHandler(async(req:Request, res:Response)=>{
 
 //get all trip
 const getAllFromDB = asyncHandler(async(req:Request, res:Response)=>{
-
-    const result = await destinationServices.getAllFromDB();
+    
+    const result = await destinationServices.getAllFromDB(req.query);
 
 
     sendResponse(res, {

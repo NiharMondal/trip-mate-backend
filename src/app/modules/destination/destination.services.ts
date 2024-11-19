@@ -1,4 +1,5 @@
 import { generateSlug } from "../../helpers/createSlug";
+import QueryBuilder from "../../helpers/QueryBuilder";
 import { IDestination } from "./destination.interface";
 import Destination from "./destination.model";
 
@@ -12,20 +13,25 @@ const insertIntoDB = async (payload: IDestination) => {
 };
 
 // admin
-const getAllFromDB = async () => {
-	const res = await Destination.find({});
+const getAllFromDB = async (query: Record<string, unknown>) => {
+	const data = new QueryBuilder(
+		Destination.find(),
+		query
+	).paginate();
+
+	const res = await data.queryModel;
 
 	return res;
 };
 
-//find by id 
+//find by id
 const getById = async (id: string) => {
 	const res = await Destination.findById(id);
 	return res;
 };
 //find by slug
 const getBySlug = async (slug: string) => {
-	const res = await Destination.findOne({slug: slug}).populate("trips");
+	const res = await Destination.findOne({ slug: slug }).populate("trips");
 
 	return res;
 };

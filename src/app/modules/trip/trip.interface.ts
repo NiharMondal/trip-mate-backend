@@ -6,12 +6,15 @@ export interface ITrip {
     destination: string;
     photos: string[];
     availAbleSeats: number;
+    visitors:number;
+    rating: number;
     budget: number;
     slug: string;
     startDate: string;
     endDate: string;
     details: string;
+    isDeleted: boolean
     user: Types.ObjectId;
     buddyRequest: Types.ObjectId;
-    isDeleted: boolean
+    reviews: Types.ObjectId;
 }

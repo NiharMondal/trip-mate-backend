@@ -21,36 +21,41 @@ const insertIntoDB = async (payload: IReviw) => {
 		throw new CustomError(404, "Trip is not found!");
 	}
 	const session = await mongoose.startSession();
+	session.startTransaction();
 	try {
-		session.startTransaction();
+		// step 1: first transaction ---> create review
+		const newReview = await Review.create([payload], { session });
 
-		// step 1: first transaction
-		const res = await Review.create([{ ...payload }], { session });
-		console.log({ res });
-		// step 2: calculate the new average rating
-		const reviews = await Review.find({ tripId: res[0].tripId });
+		// step 2: second transaction ----> find review
+		const reviews = await Review.find(
+			{ tripId: newReview[0].tripId },
+			null,
+			{
+				session,
+			}
+		);
 
-		const totalRatings = reviews.reduce(
-			(sum, review) => sum + review.rating,
+		// step 3: calculate the new average rating
+		const totalRating = reviews.reduce(
+			(sum, review) => sum + review?.rating,
 			0
 		);
-		const avgRating = totalRatings / reviews.length + 1;
+		const averageRating = Math.round(totalRating / reviews.length);
 
-		console.log({ avgRating });
-		// step 3: second trasnaction
-		await Trip.findOneAndUpdate(
-			res[0].tripId,
-			{ $push: { reviews: res[0]._id } },
-			{ session }
+		// step 4: third transaction --->  Update the trip's rating
+		await Trip.findByIdAndUpdate(
+			newReview[0].tripId,
+			{ rating: averageRating, $push: { reviews: newReview[0]._id } },
+			{ new: true, session }
 		);
 
 		await session.commitTransaction();
 		await session.endSession();
-		return res[0];
+		return newReview[0];
 	} catch (error: any) {
 		await session.abortTransaction();
 		await session.endSession();
-		console.log(error.message);
+		
 		throw new CustomError(500, "Something went wrong!");
 	}
 };

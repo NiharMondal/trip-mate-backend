@@ -81,9 +81,12 @@ const getAllFromDB = async (query: Record<string, string | unknown>) => {
 
 //find by slug --> public
 const getBySlug = async (slug: string) => {
-	const res = await Trip.findOne({
-		slug,
-	});
+
+	const res = await Trip.findOneAndUpdate(
+		{slug:slug},
+		{ $inc: { visitors: 1 } }, //increase visitor field when user click to see details
+		{ new: true }
+	);
 	return res;
 };
 
@@ -133,7 +136,11 @@ const freshlyAdded = async () => {
 };
 
 const popularTrip = async () => {
-	const res = await Trip.find({});
+
+	const res = await Trip.find({
+		$or: [{ visitors: { $gte: 3 } }, { rating: { $gt: 3 } }],
+	});
+	return res;
 };
 export const tripServices = {
 	insertIntoDB,
@@ -141,8 +148,9 @@ export const tripServices = {
 	getBySlug,
 	deleteFromDB,
 	updateIntoDB,
-	getMyTrips,
-
+	
 	//extra services
 	freshlyAdded,
+	getMyTrips,
+	popularTrip
 };

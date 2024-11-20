@@ -42,6 +42,7 @@ const tripSchema = new Schema<ITrip>(
 		},
 		slug: {
 			type: String,
+			index: true,
 		},
 		details: {
 			type: String,

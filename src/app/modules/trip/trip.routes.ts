@@ -7,7 +7,7 @@ const router = Router();
 router.get("/freshly-added", tripController.freshlyAdded);
 
 // popular trip
-router.get("/popular-trip", tripController.getMyTrips);
+router.get("/popular-trip", tripController.popularTrip);
 
 // by slug
 router.get("/:slug", tripController.getBySlug);

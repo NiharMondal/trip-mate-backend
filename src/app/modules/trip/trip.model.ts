@@ -8,6 +8,11 @@ const tripSchema = new Schema<ITrip>(
 			required: [true, "Title is required"],
 			unique: true,
 		},
+		slug: {
+			type: String,
+			unique: true,
+			index: true,
+		},
 		from: {
 			type: String,
 			required: [true, "Starting place is required"],
@@ -20,9 +25,12 @@ const tripSchema = new Schema<ITrip>(
 			type: [String],
 			required: [true, "Photo URL is required"],
 		},
-		availAbleSeats: {
+		maxGuests: {
 			type: Number,
 			default: 10,
+		},
+		availAbleSeats: {
+			type: Number,
 		},
 		budget: {
 			type: Number,
@@ -40,10 +48,7 @@ const tripSchema = new Schema<ITrip>(
 			type: Number,
 			default: 0,
 		},
-		slug: {
-			type: String,
-			index: true,
-		},
+
 		details: {
 			type: String,
 			required: [true, "End date required"],

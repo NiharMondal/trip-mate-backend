@@ -1,5 +1,8 @@
 import { Types } from "mongoose";
+
 export const ROLE = ["user", "admin"]
+
+
 export interface IUser {
     name: string;
     email:string;

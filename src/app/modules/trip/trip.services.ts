@@ -31,7 +31,10 @@ const insertIntoDB = async (payload: ITrip) => {
 	try {
 		session.startTransaction();
 		//creating trip
-		const res = await Trip.create([{ ...payload, slug }], { session });
+		const res = await Trip.create(
+			[{ ...payload, slug, availAbleSeats: payload.maxGuests }],
+			{ session }
+		);
 
 		// inserting trip _id to destination collection
 		await Destination.findOneAndUpdate(
@@ -81,9 +84,8 @@ const getAllFromDB = async (query: Record<string, string | unknown>) => {
 
 //find by slug --> public
 const getBySlug = async (slug: string) => {
-
 	const res = await Trip.findOneAndUpdate(
-		{slug:slug},
+		{ slug: slug },
 		{ $inc: { visitors: 1 } }, //increase visitor field when user click to see details
 		{ new: true }
 	);
@@ -135,8 +137,8 @@ const freshlyAdded = async () => {
 	return res;
 };
 
+// public
 const popularTrip = async () => {
-
 	const res = await Trip.find({
 		$or: [{ visitors: { $gte: 3 } }, { rating: { $gt: 3 } }],
 	});
@@ -148,9 +150,9 @@ export const tripServices = {
 	getBySlug,
 	deleteFromDB,
 	updateIntoDB,
-	
+
 	//extra services
 	freshlyAdded,
 	getMyTrips,
-	popularTrip
+	popularTrip,
 };

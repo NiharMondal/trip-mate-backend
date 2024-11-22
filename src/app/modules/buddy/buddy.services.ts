@@ -11,7 +11,9 @@ const requestToJoin = async (payload: IBuddyRequest) => {
 	if (!tripExist) {
 		throw new CustomError(404, "Trip not found!");
 	}
-
+	if (tripExist.availAbleSeats < payload.people) {
+		throw new CustomError(400, "There is no sufficent seats!");
+	}
 	//start session
 	const session = await mongoose.startSession();
 	try {
@@ -36,7 +38,7 @@ const requestToJoin = async (payload: IBuddyRequest) => {
 	} catch (error) {
 		await session.abortTransaction();
 		await session.endSession();
-		
+
 		throw new CustomError(400, "Something went wrong!");
 	}
 };

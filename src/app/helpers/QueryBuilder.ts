@@ -30,11 +30,11 @@ class QueryBuilder<T> {
 	}
 
 	budget() {
-		let price: string[] = [];
-		if (this.query?.budget) {
-			price = (this.query?.budget as string)?.split(",");
+		const minPrice = Number(this?.query?.minBudget) || 0;
+		const maxPrice = Number(this?.query?.maxBudget) || 12000;
+		if (minPrice || maxPrice) {
 			this.queryModel = this.queryModel.find({
-				$or: [{ budget: { $gte: price[0], $lte: price[1] } }],
+				$or: [{ budget: { $gte: minPrice, $lte: maxPrice } }],
 			});
 		}
 		return this;
@@ -43,7 +43,16 @@ class QueryBuilder<T> {
 	filter() {
 		const queryCopy = { ...this.query };
 
-		const exludedFields = ["search", "page", "limit", "sort", "budget"];
+		const exludedFields = [
+			"search",
+			"page",
+			"limit",
+			"sort",
+			"orderBy",
+			"minBudget",
+			"maxBudget",
+			"fields",
+		];
 
 		// deleting item from main query
 		exludedFields.forEach((field) => delete queryCopy[field]);
@@ -55,13 +64,16 @@ class QueryBuilder<T> {
 	}
 
 	sort() {
-		let sortString: Record<string, unknown> = {};
-		if (this.query?.sort) {
-			sortString["budget"] = this.query?.sort;
+		const sortBy  = this?.query?.sortBy;
+		const order = this?.query?.order || "desc";
+		let sortString: Record<string, string> = {};
+		const sortArr = ["budget","title","rating"];
+
+
+		if (sortBy || order) {
+			
+			this.queryModel = this?.queryModel.sort()
 		}
-
-		this.queryModel = this.queryModel.sort(sortString as {});
-
 		return this;
 	}
 
@@ -78,17 +90,26 @@ class QueryBuilder<T> {
 		return this;
 	}
 
+	fields() {
+		if (this?.query?.fields) {
+			const field =
+				(this?.query?.fields as string).split(",").join(" ") || "- __v";
+			this.queryModel = this.queryModel.select(field);
+		}
+		return this;
+	}
+
 	async countTotal() {
 		const queries = this.queryModel.getFilter();
 		const totalDocs = await this.queryModel.model.countDocuments(queries);
 		const limit = Number(this.query?.limit) || 12;
-		
+
 		const totalPages = Math.ceil(totalDocs / limit);
 		const currentPage = Number(this?.query?.page) || 1;
 		return {
 			totalDocs,
 			totalPages,
-			currentPage
+			currentPage,
 		};
 	}
 }

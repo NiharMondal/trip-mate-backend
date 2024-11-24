@@ -17,7 +17,7 @@ const getAllFromDB = async (query: Record<string, unknown>) => {
 	const data = new QueryBuilder(
 		Destination.find(),
 		query
-	).paginate();
+	).paginate().fields()
 
 	const res = await data.queryModel;
 

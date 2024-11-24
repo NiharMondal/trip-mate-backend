@@ -71,7 +71,8 @@ const getAllFromDB = async (query: Record<string, string | unknown>) => {
 		.filter()
 		.budget()
 		.sort()
-		.paginate();
+		.paginate()
+		
 
 	const res = await data.queryModel;
 	const metaData = await data.countTotal();

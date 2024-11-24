@@ -12,14 +12,36 @@ class QueryBuilder<T> {
 		this.query = query;
 	}
 
+	filter() {
+		const queryCopy = { ...this.query };
+
+		const exludedFields = [
+			"search",
+			"page",
+			"limit",
+			"sortBy",
+			"order",
+			"maxBudget",
+			"minBudget",
+			"fields",
+		];
+
+		// deleting item from main query
+		exludedFields.forEach((field) => delete queryCopy[field]);
+
+		if (this.query) {
+			this.queryModel = this.queryModel.find(queryCopy);
+		}
+		return this;
+	}
 	search(searchableFields: string[]) {
-		if (this.query?.search) {
+		if (this?.query?.search) {
 			this.queryModel = this.queryModel.find({
 				$or: searchableFields.map(
 					(field) =>
 						({
 							[field]: {
-								$regex: this.query.search,
+								$regex: this?.query?.search,
 								$options: "i",
 							},
 						} as FilterQuery<T>)
@@ -34,50 +56,32 @@ class QueryBuilder<T> {
 		const maxPrice = Number(this?.query?.maxBudget) || 12000;
 		if (minPrice || maxPrice) {
 			this.queryModel = this.queryModel.find({
-				$or: [{ budget: { $gte: minPrice, $lte: maxPrice } }],
+				budget: { $gte: minPrice, $lte: maxPrice },
 			});
 		}
 		return this;
 	}
 
-	filter() {
-		const queryCopy = { ...this.query };
-
-		const exludedFields = [
-			"search",
-			"page",
-			"limit",
-			"sort",
-			"orderBy",
-			"minBudget",
-			"maxBudget",
-			"fields",
-		];
-
-		// deleting item from main query
-		exludedFields.forEach((field) => delete queryCopy[field]);
-
-		if (this.query) {
-			this.queryModel = this.queryModel.find(queryCopy);
-		}
-		return this;
-	}
-
 	sort() {
-		const sortBy  = this?.query?.sortBy;
-		const order = this?.query?.order || "desc";
-		let sortString: Record<string, string> = {};
-		const sortArr = ["budget","title","rating"];
+		const sortBy = this.query?.sortBy || "createdAt";
+		const order = this.query?.order;
+		const sortOrder = order === "desc" ? -1 : 1; // Determine sort order (default to ascending)
 
-
+		// Validate the sortBy field to ensure it's a valid key
+		const validSortFields = ["title", "rating", "budget", "visitors"]; // Add valid fields here
 		if (sortBy || order) {
-			
-			this.queryModel = this?.queryModel.sort()
+			if (validSortFields.includes(sortBy as string)) {
+				// Create a dynamic sort object
+				const sortObj = { [sortBy as string]: sortOrder };
+
+				this.queryModel = this.queryModel.sort(sortObj as {});
+			}
 		}
+
 		return this;
 	}
 
-	paginate() {
+	pagination() {
 		if (this.query?.page || this.query?.limit) {
 			const p = Number(this.query.page) || 1;
 			const l = Number(this.query.limit) || 12;

@@ -54,6 +54,7 @@ const insertIntoDB = async (payload: ITrip) => {
 
 // get all trip --> public
 const getAllFromDB = async (query: Record<string, string | unknown>) => {
+	
 	const data = new QueryBuilder(
 		Trip.find()
 			.populate("user", "name -_id")
@@ -70,9 +71,8 @@ const getAllFromDB = async (query: Record<string, string | unknown>) => {
 		.search(["title", "destination"])
 		.filter()
 		.budget()
+		.pagination()
 		.sort()
-		.paginate()
-		
 
 	const res = await data.queryModel;
 	const metaData = await data.countTotal();

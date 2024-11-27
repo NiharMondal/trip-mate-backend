@@ -3,8 +3,9 @@ import { tripController } from "./trip.controller";
 
 const router = Router();
 
-// trip by destination : public
-router.get("/destination/:destination", tripController.getTripByDestination);
+// public --> get related trip
+router.get("/related-trip/:id", tripController.relatedTrip);
+
 // freshly added : public
 router.get("/freshly-added", tripController.freshlyAdded);
 

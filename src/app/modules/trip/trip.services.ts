@@ -54,7 +54,6 @@ const insertIntoDB = async (payload: ITrip) => {
 
 // get all trip --> public
 const getAllFromDB = async (query: Record<string, string | unknown>) => {
-	
 	const data = new QueryBuilder(
 		Trip.find()
 			.populate("user", "name -_id")
@@ -72,7 +71,7 @@ const getAllFromDB = async (query: Record<string, string | unknown>) => {
 		.filter()
 		.budget()
 		.pagination()
-		.sort()
+		.sort();
 
 	const res = await data.queryModel;
 	const metaData = await data.countTotal();
@@ -146,13 +145,35 @@ const popularTrip = async () => {
 	return res;
 };
 
+// public
 
-// public 
+const relatedTrip = async (id: string) => {
+	const currentTrip = await Trip.findById(id);
 
-const getTripByDestination = async(destination:string)=>{
-	const res = await Trip.find({destination})
+	if (!currentTrip) {
+		throw new CustomError(404, "Trip not found!");
+	}
+	
+	const minPrice = currentTrip.budget * 0.2;
+	const maxPrice = currentTrip.budget * 1.8;
+
+	const minVisitors = currentTrip.visitors * 0.2;
+	const maxVisitors = currentTrip.visitors * 1.8;
+
+	const minRatings = currentTrip.visitors * 0.2;
+	const maxRatings = currentTrip.visitors * 1.5;
+
+	const res = await Trip.find({
+		_id: { $not: { $eq: id } },
+		$or: [
+			{ budget: { $gte: minPrice, $lte: maxPrice } },
+			{ visitors: { $gte: minVisitors, $lte: maxVisitors } },
+			{ rating: { $gte: minRatings, $lte: maxRatings } },
+		],
+	}).limit(3);
+
 	return res;
-}
+};
 export const tripServices = {
 	insertIntoDB,
 	getAllFromDB,
@@ -164,5 +185,5 @@ export const tripServices = {
 	freshlyAdded,
 	getMyTrips,
 	popularTrip,
-	getTripByDestination
+	relatedTrip,
 };

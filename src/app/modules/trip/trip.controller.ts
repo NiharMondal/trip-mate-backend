@@ -95,9 +95,9 @@ const popularTrip = asyncHandler(async (req: Request, res: Response) => {
 		result: result,
 	});
 });
-const getTripByDestination = asyncHandler(async (req: Request, res: Response) => {
-	const {destination} = req.params;
-	const result = await tripServices.getTripByDestination(destination);
+const relatedTrip = asyncHandler(async (req: Request, res: Response) => {
+	const {id} = req.params;
+	const result = await tripServices.relatedTrip(id);
 
 	sendResponse(res, {
 		statusCode: 200,
@@ -116,5 +116,5 @@ export const tripController = {
 	freshlyAdded,
 	getMyTrips,
 	popularTrip,
-	getTripByDestination,
+	relatedTrip,
 };

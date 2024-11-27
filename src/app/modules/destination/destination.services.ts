@@ -76,6 +76,6 @@ export const destinationServices = {
 	deleteFromDB,
 	updateIntoDB,
 
-	//
+	// extra sevices
 	getAllTripsByDestination,
 };

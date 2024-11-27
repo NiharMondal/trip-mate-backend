@@ -1,5 +1,6 @@
 import { generateSlug } from "../../helpers/createSlug";
 import QueryBuilder from "../../helpers/QueryBuilder";
+import Trip from "../trip/trip.model";
 import { IDestination } from "./destination.interface";
 import Destination from "./destination.model";
 
@@ -14,10 +15,9 @@ const insertIntoDB = async (payload: IDestination) => {
 
 // admin
 const getAllFromDB = async (query: Record<string, unknown>) => {
-	const data = new QueryBuilder(
-		Destination.find(),
-		query
-	).pagination().fields()
+	const data = new QueryBuilder(Destination.find(), query)
+		.pagination()
+		.fields();
 
 	const res = await data.queryModel;
 
@@ -57,6 +57,17 @@ const updateIntoDB = async (id: string, payload: Partial<IDestination>) => {
 	return res;
 };
 
+// public --> get all trips by destination
+const getAllTripsByDestination = async (
+	destination: string,
+	query: Record<string, unknown>
+) => {
+	const data = new QueryBuilder(Trip.find({ destination }), query).search(["title"]);
+
+	const res = await data.queryModel;
+
+	return res;
+};
 export const destinationServices = {
 	insertIntoDB,
 	getAllFromDB,
@@ -64,4 +75,7 @@ export const destinationServices = {
 	getBySlug,
 	deleteFromDB,
 	updateIntoDB,
+
+	//
+	getAllTripsByDestination,
 };

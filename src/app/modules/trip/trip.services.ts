@@ -145,6 +145,14 @@ const popularTrip = async () => {
 	});
 	return res;
 };
+
+
+// public 
+
+const getTripByDestination = async(destination:string)=>{
+	const res = await Trip.find({destination})
+	return res;
+}
 export const tripServices = {
 	insertIntoDB,
 	getAllFromDB,
@@ -156,4 +164,5 @@ export const tripServices = {
 	freshlyAdded,
 	getMyTrips,
 	popularTrip,
+	getTripByDestination
 };

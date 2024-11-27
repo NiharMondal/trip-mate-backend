@@ -95,6 +95,16 @@ const popularTrip = asyncHandler(async (req: Request, res: Response) => {
 		result: result,
 	});
 });
+const getTripByDestination = asyncHandler(async (req: Request, res: Response) => {
+	const {destination} = req.params;
+	const result = await tripServices.getTripByDestination(destination);
+
+	sendResponse(res, {
+		statusCode: 200,
+		message: "Data fetched successfully",
+		result: result,
+	});
+});
 export const tripController = {
 	insertIntoDB,
 	getAllFromDB,
@@ -105,6 +115,6 @@ export const tripController = {
 	//extra controller
 	freshlyAdded,
 	getMyTrips,
-	popularTrip
-	
+	popularTrip,
+	getTripByDestination,
 };

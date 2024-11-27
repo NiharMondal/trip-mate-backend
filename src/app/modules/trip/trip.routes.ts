@@ -3,6 +3,8 @@ import { tripController } from "./trip.controller";
 
 const router = Router();
 
+// trip by destination : public
+router.get("/destination/:destination", tripController.getTripByDestination);
 // freshly added : public
 router.get("/freshly-added", tripController.freshlyAdded);
 

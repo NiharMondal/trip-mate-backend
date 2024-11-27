@@ -7,6 +7,12 @@ import { USER_ROLE } from "../../helpers/role.constant";
 
 const router = Router();
 
+
+// get trips by destination 
+router.get("/:destination/trips", destinationController.getAllTripsByDestination );
+
+
+
 router
 	.route("/")
 	.post(

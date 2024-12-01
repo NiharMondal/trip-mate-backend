@@ -15,11 +15,6 @@ router.get("/popular-trip", tripController.popularTrip);
 // by slug : public
 router.get("/:slug", tripController.getBySlug);
 
-// protected: admin - user
-router
-	.route("/:id")
-	.patch(tripController.updateIntoDB)
-	.delete(tripController.deleteFromDB);
 
 // my trips (user-based) : protected
 router.route("/my-trip/:userId").get(tripController.getMyTrips);
@@ -30,6 +25,12 @@ router
 	.post(tripController.insertIntoDB)
 	.get(tripController.getAllFromDB);
 
+
+// protected: admin - user
+router
+	.route("/:id")
+	.patch(tripController.updateIntoDB)
+	.delete(tripController.deleteFromDB);
 
 
 export const tourRoutes =  router;

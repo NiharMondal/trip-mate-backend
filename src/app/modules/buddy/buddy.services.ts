@@ -3,6 +3,7 @@ import CustomError from "../../utils/CustomeError";
 import Trip from "../trip/trip.model";
 import { IBuddyRequest } from "./buddy.interface";
 import Buddy from "./buddy.model";
+import User from "../user/user.model";
 
 //make a request to join
 const requestToJoin = async (payload: IBuddyRequest) => {
@@ -45,7 +46,11 @@ const requestToJoin = async (payload: IBuddyRequest) => {
 
 // get outgoing requests (tours the user has requested to join)
 const getOutgoingRequests = async (userId: string) => {
-	const res = await Buddy.find({ buddy: userId })
+	const user = await User.findById(userId);
+	if (!user) {
+		throw new CustomError(404, "User not found!");
+	}
+	const res = await Buddy.find({ user: userId })
 		.populate({
 			path: "trip",
 			select: "title startDate endDate",
@@ -64,9 +69,9 @@ const getIncommingRequests = async (userId: string) => {
 	const res = await Trip.find({ user: userId })
 		.populate({
 			path: "buddyRequest",
-			select: "people status totalCost",
+			select: "user people status totalCost",
 			populate: {
-				path: "buddy",
+				path: "user",
 				select: "name",
 			},
 		})

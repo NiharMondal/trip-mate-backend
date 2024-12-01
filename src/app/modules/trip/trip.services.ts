@@ -54,19 +54,7 @@ const insertIntoDB = async (payload: ITrip) => {
 
 // get all trip --> public
 const getAllFromDB = async (query: Record<string, string | unknown>) => {
-	const data = new QueryBuilder(
-		Trip.find()
-			.populate("user", "name -_id")
-			.populate({
-				path: "reviews",
-				select: "rating message userId",
-				populate: {
-					path: "userId",
-					select: "name",
-				},
-			}),
-		query
-	)
+	const data = new QueryBuilder(Trip.find({ isDeleted: false }), query)
 		.search(["title", "destination"])
 		.filter()
 		.budget()
@@ -84,11 +72,21 @@ const getAllFromDB = async (query: Record<string, string | unknown>) => {
 
 //find by slug --> public
 const getBySlug = async (slug: string) => {
-	const res = await Trip.findOneAndUpdate(
+	await Trip.findOneAndUpdate(
 		{ slug: slug },
 		{ $inc: { visitors: 1 } }, //increase visitor field when user click to see details
 		{ new: true }
 	);
+	const res = await Trip.findOne({ slug, isDeleted: false })
+		.populate("user", "name -_id")
+		.populate({
+			path: "reviews",
+			select: "rating comment userId",
+			populate: {
+				path: "userId",
+				select: "name avatar email",
+			},
+		});
 	return res;
 };
 
@@ -119,20 +117,17 @@ const updateIntoDB = async (id: string, payload: Partial<ITrip>) => {
 const getMyTrips = async (userId: string) => {
 	const res = await Trip.find({
 		user: userId,
-	})
-		.populate({
-			path: "buddyRequest",
-			select: "people status totalCost",
-			populate: { path: "buddy", select: "name email" },
-		})
-		.select("title from destination availableSeats");
+		isDeleted: false,
+	}).select("title from startDate endDate budget availAbleSeats");
 
 	return res;
 };
 
 //freshly added -> public
 const freshlyAdded = async () => {
-	const res = await Trip.find({}).limit(9).sort({ createdAt: "desc" });
+	const res = await Trip.find({ isDeleted: false })
+		.limit(9)
+		.sort({ createdAt: "desc" });
 
 	return res;
 };
@@ -140,6 +135,7 @@ const freshlyAdded = async () => {
 // public
 const popularTrip = async () => {
 	const res = await Trip.find({
+		isDeleted: false,
 		$or: [{ visitors: { $gte: 3 } }, { rating: { $gt: 3 } }],
 	});
 	return res;
@@ -153,7 +149,7 @@ const relatedTrip = async (id: string) => {
 	if (!currentTrip) {
 		throw new CustomError(404, "Trip not found!");
 	}
-	
+
 	const minPrice = currentTrip.budget * 0.2;
 	const maxPrice = currentTrip.budget * 1.8;
 
@@ -164,6 +160,7 @@ const relatedTrip = async (id: string) => {
 	const maxRatings = currentTrip.visitors * 1.5;
 
 	const res = await Trip.find({
+		isDeleted: false,
 		_id: { $not: { $eq: id } },
 		$or: [
 			{ budget: { $gte: minPrice, $lte: maxPrice } },

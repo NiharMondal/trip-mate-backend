@@ -30,7 +30,7 @@ const getIncommingRequests = asyncHandler(
 
 const getOutgoingRequests = asyncHandler(
 	async (req: Request, res: Response) => {
-        const {userId} = req.params;
+        const { userId } = req.params;
 		const result = await buddyServices.getOutgoingRequests(userId);
 
 		sendResponse(res, {

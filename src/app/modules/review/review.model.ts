@@ -5,7 +5,7 @@ import { IReviw } from "./review.interface";
 
 const reviewSchema = new Schema<IReviw>(
 	{
-		message: {
+		comment: {
 			type: String,
 			required: [true, "Review message is required"],
 		},

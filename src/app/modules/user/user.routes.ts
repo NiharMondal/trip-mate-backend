@@ -3,14 +3,16 @@ import { userController } from "./user.controller";
 
 const router = Router();
 
-router.route("/").get(userController.getAllFromDB);
 router.get("/:userId/outgoing", userController.getOutGoingRequest);
+
+
 router.get("/:userId/incomming", userController.getIncommingRequests);
 
 router
-	.route("/:id")
-	.get(userController.getById)
-	.patch(userController.updateIntoDB)
-	.delete(userController.deleteFromDB);
+.route("/:id")
+.get(userController.getById)
+.patch(userController.updateIntoDB)
+.delete(userController.deleteFromDB);
+router.route("/").get(userController.getAllFromDB);
 
 export const userRoutes = router;

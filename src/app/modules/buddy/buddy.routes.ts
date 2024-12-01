@@ -13,13 +13,13 @@ router.post(
 );
 
 router.get(
-	"/user/:userId/requests/outgoing",
+	"/user/:userId/outgoing-requests",
 	buddyController.getOutgoingRequests
 );
 
 
 router.get(
-	"/user/:userId/requests/incomming",
+	"/user/:userId/incoming-requests",
 	buddyController.getIncommingRequests
 );
 

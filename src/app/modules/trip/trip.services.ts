@@ -137,7 +137,7 @@ const popularTrip = async () => {
 	const res = await Trip.find({
 		isDeleted: false,
 		$or: [{ visitors: { $gte: 3 } }, { rating: { $gt: 3 } }],
-	});
+	}).limit(6);
 	return res;
 };
 

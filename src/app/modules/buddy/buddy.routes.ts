@@ -17,15 +17,14 @@ router.get(
 	buddyController.getOutgoingRequests
 );
 
-
 router.get(
 	"/user/:userId/incoming-requests",
 	buddyController.getIncommingRequests
 );
 
-
-router.patch("/trip/:requestId/update", buddyController.updateRequestStatus);
-
-
+router.patch(
+	"/response/:id/update-status",
+	buddyController.updateRequestStatus
+);
 
 export const buddyRequestRoutes = router;

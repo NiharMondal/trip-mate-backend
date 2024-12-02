@@ -53,13 +53,13 @@ const getOutgoingRequests = async (userId: string) => {
 	const res = await Buddy.find({ user: userId })
 		.populate({
 			path: "trip",
-			select: "title startDate endDate",
+			select: "user title startDate",
 			populate: {
 				path: "user",
-				select: "name email",
+				select: "name",
 			},
 		})
-		.select("_id status totalCost");
+		.select("_id status");
 
 	return res;
 };
@@ -82,20 +82,20 @@ const getIncommingRequests = async (userId: string) => {
 
 //approve or reject a request
 const updateRequestStatus = async (
-	requestId: string,
+	id: string,
 	payload: { status: string; userId: string }
 ) => {
 	const buddyRequest = await Buddy.findOne({
-		_id: requestId,
-		buddy: payload.userId,
+		_id: id,
+		user: payload.userId,
 	});
 
 	if (!buddyRequest) {
-		throw new CustomError(404, "Requested trip mate not found!");
+		throw new CustomError(404, "Buddy request not found!");
 	}
 
 	const res = await Buddy.findByIdAndUpdate(
-		requestId,
+		id,
 		{
 			$set: { status: payload.status },
 		},

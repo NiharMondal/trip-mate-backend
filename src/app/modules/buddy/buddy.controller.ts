@@ -3,7 +3,6 @@ import asyncHandler from "../../utils/asyncHandler";
 import { buddyServices } from "./buddy.services";
 import sendResponse from "../../utils/sendResponse";
 
-
 //create trip
 const requestToJoin = asyncHandler(async (req: Request, res: Response) => {
 	const result = await buddyServices.requestToJoin(req.body);
@@ -17,7 +16,7 @@ const requestToJoin = asyncHandler(async (req: Request, res: Response) => {
 
 const getIncommingRequests = asyncHandler(
 	async (req: Request, res: Response) => {
-        const {userId} = req.params;
+		const { userId } = req.params;
 		const result = await buddyServices.getIncommingRequests(userId);
 
 		sendResponse(res, {
@@ -30,7 +29,7 @@ const getIncommingRequests = asyncHandler(
 
 const getOutgoingRequests = asyncHandler(
 	async (req: Request, res: Response) => {
-        const { userId } = req.params;
+		const { userId } = req.params;
 		const result = await buddyServices.getOutgoingRequests(userId);
 
 		sendResponse(res, {
@@ -44,9 +43,9 @@ const getOutgoingRequests = asyncHandler(
 //update status
 const updateRequestStatus = asyncHandler(
 	async (req: Request, res: Response) => {
-        const {requestId} = req.params;
+		const { id } = req.params;
 
-		const result = await buddyServices.updateRequestStatus(requestId, req.body);
+		const result = await buddyServices.updateRequestStatus(id, req.body);
 
 		sendResponse(res, {
 			statusCode: 200,
@@ -56,11 +55,9 @@ const updateRequestStatus = asyncHandler(
 	}
 );
 
-
-
 export const buddyController = {
 	requestToJoin,
 	getOutgoingRequests,
-    getIncommingRequests,
-    updateRequestStatus
+	getIncommingRequests,
+	updateRequestStatus,
 };

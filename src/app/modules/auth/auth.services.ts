@@ -1,9 +1,13 @@
 import { JwtPayload } from "jsonwebtoken";
 import { generateToken } from "../../helpers/createSlug";
-import { checkPassword } from "../../helpers/hashPasword";
+import { checkPassword, hashPassword } from "../../helpers/hashPasword";
 import CustomError from "../../utils/CustomeError";
 import User from "../user/user.model";
-import { IRegisterUser, ITokenPayload } from "./auth.interface";
+import {
+	IChangePassword,
+	IRegisterUser,
+	ITokenPayload,
+} from "./auth.interface";
 
 const registerUser = async (payload: IRegisterUser) => {
 	const user = await User.findOne({ email: payload.email });
@@ -18,7 +22,6 @@ const registerUser = async (payload: IRegisterUser) => {
 		id: res._id,
 		name: res.name,
 		email: res.email,
-		
 	};
 };
 
@@ -39,7 +42,7 @@ const loginUser = async (payload: Omit<IRegisterUser, "name">) => {
 		id: user._id,
 		email: user.email,
 		name: user.name,
-		role:user.role
+		role: user.role,
 	} as JwtPayload;
 
 	const token = generateToken(tokenPayload);
@@ -49,7 +52,44 @@ const loginUser = async (payload: Omit<IRegisterUser, "name">) => {
 	};
 };
 
+const changePassword = async (id: string, payload: IChangePassword) => {
+	//check newPassword and confirmPassword
+	if (payload.newPassword !== payload.confirmPassword) {
+		throw new CustomError(400, "Password doesn't match!");
+	}
+
+	if (payload.oldPassword === payload.newPassword) {
+		throw new CustomError(400, "New password can't be current password");
+	}
+
+	const user = await User.findById(id).select("password");
+
+	if (!user) {
+		throw new CustomError(404, "Invalid credentials");
+	}
+
+	const matchPassword = await checkPassword(
+		payload.oldPassword,
+		user.password
+	);
+
+	if (!matchPassword) {
+		throw new CustomError(404, "Invalid credentials");
+	}
+	const hashedPassword = await hashPassword(payload.confirmPassword);
+
+	await User.findByIdAndUpdate(
+		id,
+		{
+			$set: {
+				password: hashedPassword,
+			},
+		},
+		{ new: true }
+	);
+};
 export const authServices = {
 	registerUser,
 	loginUser,
+	changePassword,
 };

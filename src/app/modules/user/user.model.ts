@@ -23,9 +23,9 @@ const userSchema = new Schema<IUser>(
 			default: "user",
 		},
 		avatar: String,
-		profile: {
-			age: String,
-			bio: String,
+		isDeleted: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	{ timestamps: true }

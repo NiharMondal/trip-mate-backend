@@ -6,7 +6,7 @@ import User from "./user.model";
 
 //admin
 const getAllFromDB = async () => {
-	const res = await User.find().select("-password -__v");
+	const res = await User.find({ isDeleted: false }).select("-password -__v");
 	return res;
 };
 
@@ -18,7 +18,13 @@ const getById = async (id: string) => {
 
 //delete by ID
 const deleteFromDB = async (id: string) => {
-	const res = await User.findByIdAndDelete(id);
+	const user = await User.findById(id);
+
+	if (!user) {
+		throw new CustomError(404, "User not found!");
+	}
+	const res = await User.findByIdAndUpdate(id, { isDeleted: true });
+	
 	return res;
 };
 
@@ -57,7 +63,7 @@ const getOutGoingRequest = async (userId: string) => {
 	return res;
 };
 
-//get incomming requests for the all trips 
+//get incomming requests for the all trips
 const getIncommingRequests = async (userId: string) => {
 	const user = await Trip.findOne({ user: userId });
 	if (!user) {

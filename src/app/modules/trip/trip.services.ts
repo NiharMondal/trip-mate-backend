@@ -118,7 +118,7 @@ const getMyTrips = async (userId: string) => {
 	const res = await Trip.find({
 		user: userId,
 		isDeleted: false,
-	}).select("title from startDate endDate budget availAbleSeats");
+	}).select("title destination startDate endDate budget availAbleSeats");
 
 	return res;
 };
@@ -126,6 +126,7 @@ const getMyTrips = async (userId: string) => {
 //freshly added -> public
 const freshlyAdded = async () => {
 	const res = await Trip.find({ isDeleted: false })
+		.select("title rating budget photos slug reviews")
 		.limit(9)
 		.sort({ createdAt: "desc" });
 
@@ -137,7 +138,9 @@ const popularTrip = async () => {
 	const res = await Trip.find({
 		isDeleted: false,
 		$or: [{ visitors: { $gte: 3 } }, { rating: { $gt: 3 } }],
-	}).limit(6);
+	})
+		.select("title rating budget photos slug reviews")
+		.limit(6);
 	return res;
 };
 

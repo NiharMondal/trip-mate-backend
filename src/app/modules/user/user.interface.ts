@@ -8,11 +8,9 @@ export interface IUser {
     email:string;
     role:string;
     avatar: string;
-    profile?:{
-        age: string;
-        bio: string;
-    },
+    
     password:string;
+    isDeleted: boolean;
     trips: Types.ObjectId;
-    buddyRequest: Types.ObjectId;
+    
 }

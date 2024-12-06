@@ -3,6 +3,13 @@ import asyncHandler from "../../utils/asyncHandler";
 import { authServices } from "./auth.services";
 import sendResponse from "../../utils/sendResponse";
 
+const options: Record<string, any> = {
+	httpOnly: true,
+	secure: true, // Set to true in production for HTTPS
+	sameSite: "Strict",
+	path: "/",
+	maxAge: 3600000 * 24, // 1 day
+};
 //register user
 const registerUser = asyncHandler(async (req: Request, res: Response) => {
 	const result = await authServices.registerUser(req.body);
@@ -16,6 +23,8 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
 
 const loginUser = asyncHandler(async (req: Request, res: Response) => {
 	const result = await authServices.loginUser(req.body);
+
+	res.cookie("tm", result.accessToken, options);
 
 	sendResponse(res, {
 		statusCode: 200,
@@ -39,5 +48,6 @@ const changePassword = asyncHandler(async (req: Request, res: Response) => {
 export const authController = {
 	registerUser,
 	loginUser,
+
 	changePassword,
 };

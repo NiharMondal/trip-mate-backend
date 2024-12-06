@@ -46,7 +46,7 @@ const loginUser = async (payload: Omit<IRegisterUser, "name">) => {
 	} as JwtPayload;
 
 	const token = generateToken(tokenPayload);
-
+	
 	return {
 		accessToken: token,
 	};

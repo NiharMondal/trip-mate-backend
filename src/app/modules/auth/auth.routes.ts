@@ -7,6 +7,7 @@ const router = Router();
 
 router.post("/sign-up", authController.registerUser);
 router.post("/login", authController.loginUser);
+
 router.patch(
 	"/change-password",
 	authGaurd(USER_ROLE.admin, USER_ROLE.user, USER_ROLE.superadmin),

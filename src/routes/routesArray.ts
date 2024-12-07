@@ -13,5 +13,5 @@ export const routesArray = [
 	{ path: "/auth", route: authRoutes },
 	{ path: "/destination", route: destinationRoutes },
 	{ path: "/review", route: reveiwRoutes },
-	{ path: "/meta", route: metaRoutes },
+	{ path: "/meta-data", route: metaRoutes },
 ];

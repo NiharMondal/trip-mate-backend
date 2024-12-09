@@ -4,7 +4,7 @@ export interface ITrip {
     title: string;
     from: string;
     destination: string;
-    photos: string[];
+    photo: string;
     maxGuests: number;
     availAbleSeats: number;
     visitors:number;

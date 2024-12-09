@@ -26,7 +26,12 @@ const insertIntoDB = async (payload: ITrip) => {
 
 	//generating slug
 	const slug = generateSlug(payload.title);
+	//checking unique slug
+	const trip = await Trip.findOne({ slug });
 
+	if (trip) {
+		throw new CustomError(400, "Title is alreay used for another trip");
+	}
 	const session = await mongoose.startSession();
 	try {
 		session.startTransaction();
@@ -126,7 +131,7 @@ const getMyTrips = async (userId: string) => {
 //freshly added -> public
 const freshlyAdded = async () => {
 	const res = await Trip.find({ isDeleted: false })
-		.select("title rating budget photos slug reviews")
+		.select("title rating budget photo slug reviews")
 		.limit(9)
 		.sort({ createdAt: "desc" });
 
@@ -135,11 +140,9 @@ const freshlyAdded = async () => {
 
 // public
 const popularTrip = async () => {
-	const res = await Trip.find({
-		isDeleted: false,
-		$or: [{ visitors: { $gte: 3 } }, { rating: { $gt: 3 } }],
-	})
-		.select("title rating budget photos slug reviews")
+	const res = await Trip.find({isDeleted:false})
+		.sort({ rating: -1, visitors: -1 })
+		.select("title rating budget photo slug reviews")
 		.limit(6);
 	return res;
 };

@@ -1,20 +1,27 @@
 import { model, Schema } from "mongoose";
 import { IDestination } from "./destination.interface";
 
-
 const destinationSchema = new Schema<IDestination>(
 	{
+		thumbnail: {
+			type: String,
+			required: true,
+		},
 		destination: {
 			type: String,
 			required: true,
 			unique: true,
 		},
-		shortInfo:{
+		shortInfo: {
 			type: String,
-			required:true
+			required: true,
 		},
 		slug: {
 			type: String,
+		},
+		visits: {
+			type: Number,
+			default: 0,
 		},
 		trips: [
 			{

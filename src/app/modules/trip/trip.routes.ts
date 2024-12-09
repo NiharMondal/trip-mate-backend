@@ -1,5 +1,9 @@
 import { Router } from "express";
 import { tripController } from "./trip.controller";
+import { validateRequest } from "../../../middleware/validateRequest";
+import { tripValidation } from "./trip.validation";
+import { authGaurd } from "../../../middleware/authGuard";
+import { USER_ROLE } from "../../helpers/role.constant";
 
 const router = Router();
 
@@ -15,16 +19,18 @@ router.get("/popular-trip", tripController.popularTrip);
 // by slug : public
 router.get("/:slug", tripController.getBySlug);
 
-
 // my trips (user-based) : protected
 router.route("/my-trip/:userId").get(tripController.getMyTrips);
 
 // general route for all trips (must come last to avoid conflicts)
 router
 	.route("/")
-	.post(tripController.insertIntoDB)
+	.post(
+		authGaurd(USER_ROLE.user, USER_ROLE.admin),
+		validateRequest(tripValidation.createTrip),
+		tripController.insertIntoDB
+	)
 	.get(tripController.getAllFromDB);
-
 
 // protected: admin - user
 router
@@ -32,5 +38,4 @@ router
 	.patch(tripController.updateIntoDB)
 	.delete(tripController.deleteFromDB);
 
-
-export const tourRoutes =  router;
+export const tourRoutes = router;

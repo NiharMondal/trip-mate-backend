@@ -101,6 +101,15 @@ const getAllTripsByDestination = asyncHandler(async(req:Request, res:Response)=>
     })
 });
 
+const getPopularDestination = asyncHandler(async (req: Request, res: Response) => {
+	const result = await destinationServices.getPopularDestination();
+
+	sendResponse(res, {
+		statusCode: 200,
+		message: "Data updated successfully",
+		result: result,
+	});
+});
 export const destinationController = {
 	insertIntoDB,
 	getAllFromDB,
@@ -111,4 +120,5 @@ export const destinationController = {
 
 	//
 	getAllTripsByDestination,
+	getPopularDestination,
 };

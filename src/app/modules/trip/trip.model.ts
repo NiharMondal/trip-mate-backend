@@ -21,8 +21,8 @@ const tripSchema = new Schema<ITrip>(
 			type: String,
 			required: [true, "Destination is required"],
 		},
-		photos: {
-			type: [String],
+		photo: {
+			type: String,
 			required: [true, "Photo URL is required"],
 		},
 		maxGuests: {

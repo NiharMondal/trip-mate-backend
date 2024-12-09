@@ -31,6 +31,11 @@ const getById = async (id: string) => {
 };
 //find by slug
 const getBySlug = async (slug: string) => {
+	await Destination.findOneAndUpdate(
+		{ slug: slug },
+		{ $inc: { visits: 1 } }, //increase visitor field when user click to see details
+		{ new: true }
+	);
 	const res = await Destination.findOne({ slug: slug }).populate("trips");
 
 	return res;
@@ -62,12 +67,22 @@ const getAllTripsByDestination = async (
 	destination: string,
 	query: Record<string, unknown>
 ) => {
-	const data = new QueryBuilder(Trip.find({ destination }), query).search(["title"]);
+	const data = new QueryBuilder(Trip.find({ destination }), query).search([
+		"title",
+	]);
 
 	const res = await data.queryModel;
 
 	return res;
 };
+
+// get popular destination
+const getPopularDestination = async () => {
+	const res = await Destination.find().sort({ visits: -1 }).limit(6);
+
+	return res;
+};
+
 export const destinationServices = {
 	insertIntoDB,
 	getAllFromDB,
@@ -78,4 +93,5 @@ export const destinationServices = {
 
 	// extra sevices
 	getAllTripsByDestination,
+	getPopularDestination
 };

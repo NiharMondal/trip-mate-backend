@@ -1,5 +1,6 @@
 import { generateSlug } from "../../helpers/createSlug";
 import QueryBuilder from "../../helpers/QueryBuilder";
+import CustomError from "../../utils/CustomeError";
 import Trip from "../trip/trip.model";
 import { IDestination } from "./destination.interface";
 import Destination from "./destination.model";
@@ -8,6 +9,10 @@ import Destination from "./destination.model";
 const insertIntoDB = async (payload: IDestination) => {
 	const slug = generateSlug(payload.destination);
 
+	const destiantion = await Destination.findOne({ slug });
+	if (destiantion) {
+		throw new CustomError(302, "Destination already in the list!");
+	}
 	const res = await Destination.create({ ...payload, slug });
 
 	return res;
@@ -16,7 +21,7 @@ const insertIntoDB = async (payload: IDestination) => {
 // admin
 const getAllFromDB = async (query: Record<string, unknown>) => {
 	const data = new QueryBuilder(Destination.find(), query)
-		.pagination()
+		
 		.fields();
 
 	const res = await data.queryModel;
@@ -93,5 +98,5 @@ export const destinationServices = {
 
 	// extra sevices
 	getAllTripsByDestination,
-	getPopularDestination
+	getPopularDestination,
 };

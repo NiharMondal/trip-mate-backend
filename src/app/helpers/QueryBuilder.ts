@@ -82,14 +82,12 @@ class QueryBuilder<T> {
 	}
 
 	pagination() {
-		if (this.query?.page || this.query?.limit) {
-			const p = Number(this.query.page) || 1;
-			const l = Number(this.query.limit) || 12;
+		const p = Number(this?.query?.page) || 1;
+		const l = Number(this?.query?.limit) || 10;
 
-			const skip = (p - 1) * l;
+		const skip = (p - 1) * l;
 
-			this.queryModel = this.queryModel.skip(skip).limit(l);
-		}
+		this.queryModel = this.queryModel.skip(skip).limit(l);
 
 		return this;
 	}
@@ -106,7 +104,7 @@ class QueryBuilder<T> {
 	async countTotal() {
 		const queries = this.queryModel.getFilter();
 		const totalDocs = await this.queryModel.model.countDocuments(queries);
-		const limit = Number(this.query?.limit) || 12;
+		const limit = Number(this.query?.limit) || 10;
 
 		const totalPages = Math.ceil(totalDocs / limit);
 		const currentPage = Number(this?.query?.page) || 1;

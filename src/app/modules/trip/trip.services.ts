@@ -75,6 +75,16 @@ const getAllFromDB = async (query: Record<string, string | unknown>) => {
 	};
 };
 
+//fing by id
+
+const getById = async (id: string) => {
+	const trip = await Trip.findById(id);
+	if (!trip) {
+		throw new CustomError(404, "Trip not found!");
+	}
+
+	return trip;
+};
 //find by slug --> public
 const getBySlug = async (slug: string) => {
 	await Trip.findOneAndUpdate(
@@ -105,6 +115,11 @@ const deleteFromDB = async (id: string) => {
 
 //update by ID --> admin/user
 const updateIntoDB = async (id: string, payload: Partial<ITrip>) => {
+	console.log(id);
+	const trip = await Trip.findById(id);
+	if (!trip) {
+		throw new CustomError(404, "Trip not found!");
+	}
 	const res = await Trip.findByIdAndUpdate(
 		id,
 		{
@@ -140,7 +155,7 @@ const freshlyAdded = async () => {
 
 // public
 const popularTrip = async () => {
-	const res = await Trip.find({isDeleted:false})
+	const res = await Trip.find({ isDeleted: false })
 		.sort({ rating: -1, visitors: -1 })
 		.select("title rating budget photo slug reviews")
 		.limit(6);
@@ -180,6 +195,7 @@ const relatedTrip = async (id: string) => {
 export const tripServices = {
 	insertIntoDB,
 	getAllFromDB,
+	getById,
 	getBySlug,
 	deleteFromDB,
 	updateIntoDB,

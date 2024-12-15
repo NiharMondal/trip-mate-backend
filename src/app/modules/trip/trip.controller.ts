@@ -16,16 +16,29 @@ const insertIntoDB = asyncHandler(async (req: Request, res: Response) => {
 
 //get all trip
 const getAllFromDB = asyncHandler(async (req: Request, res: Response) => {
-	const result = await tripServices.getAllFromDB(req.query as Record<string, string| unknown>);
+	const result = await tripServices.getAllFromDB(
+		req.query as Record<string, string | unknown>
+	);
 
 	sendResponse(res, {
 		statusCode: 200,
 		message: "Data fetched successfully",
 		result: result.res,
-		meta: result.metaData
+		meta: result.metaData,
 	});
 });
 
+//get by id
+const getById = asyncHandler(async (req: Request, res: Response) => {
+	const { id } = req.params;
+	const result = await tripServices.getById(id);
+
+	sendResponse(res, {
+		statusCode: 200,
+		message: "Data fetched successfully",
+		result: result,
+	});
+});
 //get single data by slug
 const getBySlug = asyncHandler(async (req: Request, res: Response) => {
 	const { slug } = req.params;
@@ -73,10 +86,8 @@ const getMyTrips = asyncHandler(async (req: Request, res: Response) => {
 	});
 });
 
-
-//freshly added 
+//freshly added
 const freshlyAdded = asyncHandler(async (req: Request, res: Response) => {
-	
 	const result = await tripServices.freshlyAdded();
 
 	sendResponse(res, {
@@ -96,7 +107,7 @@ const popularTrip = asyncHandler(async (req: Request, res: Response) => {
 	});
 });
 const relatedTrip = asyncHandler(async (req: Request, res: Response) => {
-	const {id} = req.params;
+	const { id } = req.params;
 	const result = await tripServices.relatedTrip(id);
 
 	sendResponse(res, {
@@ -108,6 +119,7 @@ const relatedTrip = asyncHandler(async (req: Request, res: Response) => {
 export const tripController = {
 	insertIntoDB,
 	getAllFromDB,
+	getById,
 	getBySlug,
 	deleteFromDB,
 	updateIntoDB,

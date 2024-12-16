@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.profileRoutes = void 0;
+const express_1 = require("express");
+const profile_controller_1 = require("./profile.controller");
+const authGuard_1 = require("../../../middleware/authGuard");
+const role_constant_1 = require("../../helpers/role.constant");
+const router = (0, express_1.Router)();
+router.patch("/update-profile", (0, authGuard_1.authGaurd)(role_constant_1.USER_ROLE.user, role_constant_1.USER_ROLE.admin, role_constant_1.USER_ROLE.superadmin), profile_controller_1.profileController.updateProfile);
+router.get("/me", (0, authGuard_1.authGaurd)(role_constant_1.USER_ROLE.user, role_constant_1.USER_ROLE.admin, role_constant_1.USER_ROLE.superadmin), profile_controller_1.profileController.getMyProfile);
+exports.profileRoutes = router;

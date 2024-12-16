@@ -8,25 +8,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const app_1 = __importDefault(require("./app"));
-const mongoose_1 = __importDefault(require("mongoose"));
-const config_1 = require("./config");
-let server;
-function main() {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            yield mongoose_1.default.connect(config_1.envConfig.mongo_uri);
-            server = app_1.default.listen(config_1.envConfig.port, () => {
-                console.log(`\nApp is listening on port ${config_1.envConfig.port} \nMongoDB connected successfully`);
-            });
+exports.validateRequest = void 0;
+const validateRequest = (schema) => {
+    return (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+        const result = yield schema.safeParseAsync(req.body);
+        if (!result.success) {
+            next(result.error);
         }
-        catch (err) {
-            console.log(err);
+        else {
+            req.body = result.data;
+            next();
         }
     });
-}
-main();
+};
+exports.validateRequest = validateRequest;

@@ -4,12 +4,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const cors_1 = __importDefault(require("cors"));
+const notFound_1 = __importDefault(require("./middleware/notFound"));
+const globalErrorHandler_1 = __importDefault(require("./middleware/globalErrorHandler"));
+const routes_1 = __importDefault(require("./routes"));
 const app = (0, express_1.default)();
-const port = 3000;
-app.get('/', (req, res) => {
-    res.send('Hello World!');
-});
-app.listen(port, () => {
-    return console.log(`Express is listening at http://localhost:${port}`);
-});
-//# sourceMappingURL=app.js.map
+app.use(express_1.default.json());
+app.use((0, cors_1.default)({ origin: ["http://localhost:3000"], credentials: true }));
+app.use("/api/v1", routes_1.default);
+//not found route handler
+app.use(notFound_1.default);
+//global error controller/ handler
+app.use(globalErrorHandler_1.default);
+exports.default = app;

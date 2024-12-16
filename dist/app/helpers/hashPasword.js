@@ -12,21 +12,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const app_1 = __importDefault(require("./app"));
-const mongoose_1 = __importDefault(require("mongoose"));
-const config_1 = require("./config");
-let server;
-function main() {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            yield mongoose_1.default.connect(config_1.envConfig.mongo_uri);
-            server = app_1.default.listen(config_1.envConfig.port, () => {
-                console.log(`\nApp is listening on port ${config_1.envConfig.port} \nMongoDB connected successfully`);
-            });
-        }
-        catch (err) {
-            console.log(err);
-        }
-    });
-}
-main();
+exports.checkPassword = exports.hashPassword = void 0;
+const bcrypt_1 = __importDefault(require("bcrypt"));
+const config_1 = require("../../config");
+const hashPassword = (value) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield bcrypt_1.default.hash(value, config_1.envConfig.salt_round);
+    return result;
+});
+exports.hashPassword = hashPassword;
+const checkPassword = (newPass, oldPass) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield bcrypt_1.default.compare(newPass, oldPass);
+    return result;
+});
+exports.checkPassword = checkPassword;

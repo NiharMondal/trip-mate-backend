@@ -11,7 +11,7 @@ const router = (0, express_1.Router)();
 // public --> get related trip
 router.get("/related-trip/:id", trip_controller_1.tripController.relatedTrip);
 // freshly added : public
-router.get("/freshly-added", (0, authGuard_1.authGaurd)(role_constant_1.USER_ROLE.admin, role_constant_1.USER_ROLE.user), trip_controller_1.tripController.freshlyAdded);
+router.get("/freshly-added", trip_controller_1.tripController.freshlyAdded);
 // popular trip : public
 router.get("/popular-trip", trip_controller_1.tripController.popularTrip);
 router.get("/by-id/:id", trip_controller_1.tripController.getById);

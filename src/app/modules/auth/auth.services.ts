@@ -3,11 +3,7 @@ import { generateToken } from "../../helpers/createSlug";
 import { checkPassword, hashPassword } from "../../helpers/hashPasword";
 import CustomError from "../../utils/CustomeError";
 import User from "../user/user.model";
-import {
-	IChangePassword,
-	IRegisterUser,
-	ITokenPayload,
-} from "./auth.interface";
+import { IChangePassword, IRegisterUser } from "./auth.interface";
 
 const registerUser = async (payload: IRegisterUser) => {
 	const user = await User.findOne({ email: payload.email });
@@ -46,7 +42,7 @@ const loginUser = async (payload: Omit<IRegisterUser, "name">) => {
 	} as JwtPayload;
 
 	const token = generateToken(tokenPayload);
-	
+
 	return {
 		accessToken: token,
 	};

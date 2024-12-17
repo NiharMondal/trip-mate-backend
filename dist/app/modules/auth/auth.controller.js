@@ -18,10 +18,10 @@ const auth_services_1 = require("./auth.services");
 const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
 const options = {
     httpOnly: true,
-    secure: true, // Set to true in production for HTTPS
+    secure: false, // Set to true in production for HTTPS
     sameSite: "Strict",
     path: "/",
-    maxAge: 3600000 * 24, // 1 day
+    maxAge: 3600000 * 24 * 3, // 3 day
 };
 //register user
 const registerUser = (0, asyncHandler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -34,7 +34,7 @@ const registerUser = (0, asyncHandler_1.default)((req, res) => __awaiter(void 0,
 }));
 const loginUser = (0, asyncHandler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield auth_services_1.authServices.loginUser(req.body);
-    res.cookie("tm", result.accessToken, options);
+    res.cookie("tm", result === null || result === void 0 ? void 0 : result.accessToken, options);
     (0, sendResponse_1.default)(res, {
         statusCode: 200,
         message: "User logged in successfully",

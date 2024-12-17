@@ -5,10 +5,10 @@ import sendResponse from "../../utils/sendResponse";
 
 const options: Record<string, any> = {
 	httpOnly: true,
-	secure: true, // Set to true in production for HTTPS
+	secure: false, // Set to true in production for HTTPS
 	sameSite: "Strict",
 	path: "/",
-	maxAge: 3600000 * 24, // 1 day
+	maxAge: 3600000 * 24 * 3, // 3 day
 };
 //register user
 const registerUser = asyncHandler(async (req: Request, res: Response) => {
@@ -24,7 +24,7 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
 const loginUser = asyncHandler(async (req: Request, res: Response) => {
 	const result = await authServices.loginUser(req.body);
 
-	res.cookie("tm", result.accessToken, options);
+	res.cookie("tm", result?.accessToken, options);
 
 	sendResponse(res, {
 		statusCode: 200,

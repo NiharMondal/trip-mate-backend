@@ -11,11 +11,7 @@ const router = Router();
 router.get("/related-trip/:id", tripController.relatedTrip);
 
 // freshly added : public
-router.get(
-	"/freshly-added",
-	authGaurd(USER_ROLE.admin, USER_ROLE.user),
-	tripController.freshlyAdded
-);
+router.get("/freshly-added", tripController.freshlyAdded);
 
 // popular trip : public
 router.get("/popular-trip", tripController.popularTrip);

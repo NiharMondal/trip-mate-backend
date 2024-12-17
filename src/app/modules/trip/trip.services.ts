@@ -147,7 +147,7 @@ const getMyTrips = async (userId: string) => {
 const freshlyAdded = async () => {
 	const res = await Trip.find({ isDeleted: false })
 		.select("title rating budget photo slug reviews")
-		.limit(9)
+		.limit(10)
 		.sort({ createdAt: "desc" });
 
 	return res;
@@ -158,7 +158,7 @@ const popularTrip = async () => {
 	const res = await Trip.find({ isDeleted: false })
 		.sort({ rating: -1, visitors: -1 })
 		.select("title rating budget photo slug reviews")
-		.limit(6);
+		.limit(10);
 	return res;
 };
 

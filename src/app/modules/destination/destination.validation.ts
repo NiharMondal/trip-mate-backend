@@ -35,6 +35,11 @@ const updateDestination = z.object({
 		.min(50, "Must contain 50 charaters")
 		.max(90, "Max charecter is 90")
 		.optional(),
+	thumbnail: z
+		.string()
+		.url({ message: "Thumbnail url should be valid" })
+		.trim()
+		.optional(),
 });
 
 export const destinationValidation = { createDestination, updateDestination };

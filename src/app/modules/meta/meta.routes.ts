@@ -7,6 +7,10 @@ const router = Router();
 
 router.get("/admin", authGaurd(USER_ROLE.admin), metaController.adminMetaData);
 
-router.get("/user/:userId",  metaController.userMetaData);
+router.get(
+	"/user/:userId",
+	authGaurd(USER_ROLE.user),
+	metaController.userMetaData
+);
 
 export const metaRoutes = router;

@@ -128,7 +128,7 @@ const getMyTrips = (userId) => __awaiter(void 0, void 0, void 0, function* () {
 const freshlyAdded = () => __awaiter(void 0, void 0, void 0, function* () {
     const res = yield trip_model_1.default.find({ isDeleted: false })
         .select("title rating budget photo slug reviews")
-        .limit(9)
+        .limit(10)
         .sort({ createdAt: "desc" });
     return res;
 });
@@ -137,7 +137,7 @@ const popularTrip = () => __awaiter(void 0, void 0, void 0, function* () {
     const res = yield trip_model_1.default.find({ isDeleted: false })
         .sort({ rating: -1, visitors: -1 })
         .select("title rating budget photo slug reviews")
-        .limit(6);
+        .limit(10);
     return res;
 });
 // public

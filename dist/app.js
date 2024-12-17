@@ -10,7 +10,10 @@ const globalErrorHandler_1 = __importDefault(require("./middleware/globalErrorHa
 const routes_1 = __importDefault(require("./routes"));
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
-app.use((0, cors_1.default)({ origin: ["http://localhost:3000"], credentials: true }));
+app.use((0, cors_1.default)({
+    origin: ["https://trip-mate-sigma.vercel.app", "http://localhost:3000"],
+    credentials: true,
+}));
 app.use("/api/v1", routes_1.default);
 //not found route handler
 app.use(notFound_1.default);

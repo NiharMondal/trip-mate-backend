@@ -27,17 +27,6 @@ const registerUser = (0, asyncHandler_1.default)((req, res) => __awaiter(void 0,
 }));
 const loginUser = (0, asyncHandler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield auth_services_1.authServices.loginUser(req.body);
-    const options = {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production", // Secure cookies in production
-        sameSite: "Lax", // Use "Lax" for better compatibility
-        path: "/",
-        maxAge: 3600 * 24 * 3, // 3 days in seconds
-        domain: process.env.NODE_ENV === "production"
-            ? process.env.FRONT_END_URL
-            : undefined, // For cross-subdomain cookies
-    };
-    res.cookie("tm", result === null || result === void 0 ? void 0 : result.accessToken, options);
     (0, sendResponse_1.default)(res, {
         statusCode: 200,
         message: "User logged in successfully",

@@ -17,20 +17,6 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
 const loginUser = asyncHandler(async (req: Request, res: Response) => {
 	const result = await authServices.loginUser(req.body);
 
-	const options: Record<string, any> = {
-		httpOnly: true,
-		secure: process.env.NODE_ENV === "production", // Secure cookies in production
-		sameSite: "Lax", // Use "Lax" for better compatibility
-		path: "/",
-		maxAge: 3600 * 24 * 3, // 3 days in seconds
-		domain:
-			process.env.NODE_ENV === "production"
-				? process.env.FRONT_END_URL
-				: undefined, // For cross-subdomain cookies
-	};
-
-	res.cookie("tm", result?.accessToken, options);
-
 	sendResponse(res, {
 		statusCode: 200,
 		message: "User logged in successfully",

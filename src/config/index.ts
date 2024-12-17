@@ -9,4 +9,5 @@ export const envConfig = {
 	database_url: process.env.URI,
 	mongo_uri: process.env.MONGO_URI,
 	jwt_secret: process.env.JWT_SECRET,
+	jwt_expire: process.env.JWT_EXPIRE,
 };

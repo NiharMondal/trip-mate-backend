@@ -3,13 +3,6 @@ import asyncHandler from "../../utils/asyncHandler";
 import { authServices } from "./auth.services";
 import sendResponse from "../../utils/sendResponse";
 
-const options: Record<string, any> = {
-	httpOnly: true,
-	secure: false, // Set to true in production for HTTPS
-	sameSite: "Strict",
-	path: "/",
-	maxAge: 3600000 * 24 * 3, // 3 day
-};
 //register user
 const registerUser = asyncHandler(async (req: Request, res: Response) => {
 	const result = await authServices.registerUser(req.body);
@@ -23,6 +16,18 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
 
 const loginUser = asyncHandler(async (req: Request, res: Response) => {
 	const result = await authServices.loginUser(req.body);
+
+	const options: Record<string, any> = {
+		httpOnly: true,
+		secure: process.env.NODE_ENV === "production", // Secure cookies in production
+		sameSite: "Lax", // Use "Lax" for better compatibility
+		path: "/",
+		maxAge: 3600 * 24 * 3, // 3 days in seconds
+		domain:
+			process.env.NODE_ENV === "production"
+				? process.env.FRONT_END_URL
+				: undefined, // For cross-subdomain cookies
+	};
 
 	res.cookie("tm", result?.accessToken, options);
 

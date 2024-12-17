@@ -16,13 +16,6 @@ exports.authController = void 0;
 const asyncHandler_1 = __importDefault(require("../../utils/asyncHandler"));
 const auth_services_1 = require("./auth.services");
 const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
-const options = {
-    httpOnly: true,
-    secure: false, // Set to true in production for HTTPS
-    sameSite: "Strict",
-    path: "/",
-    maxAge: 3600000 * 24 * 3, // 3 day
-};
 //register user
 const registerUser = (0, asyncHandler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield auth_services_1.authServices.registerUser(req.body);
@@ -34,6 +27,16 @@ const registerUser = (0, asyncHandler_1.default)((req, res) => __awaiter(void 0,
 }));
 const loginUser = (0, asyncHandler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield auth_services_1.authServices.loginUser(req.body);
+    const options = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production", // Secure cookies in production
+        sameSite: "Lax", // Use "Lax" for better compatibility
+        path: "/",
+        maxAge: 3600 * 24 * 3, // 3 days in seconds
+        domain: process.env.NODE_ENV === "production"
+            ? process.env.FRONT_END_URL
+            : undefined, // For cross-subdomain cookies
+    };
     res.cookie("tm", result === null || result === void 0 ? void 0 : result.accessToken, options);
     (0, sendResponse_1.default)(res, {
         statusCode: 200,

@@ -14,7 +14,7 @@ const generateSlug = (payload) => {
 exports.generateSlug = generateSlug;
 const generateToken = (payload) => {
     const token = jsonwebtoken_1.default.sign(payload, config_1.envConfig.jwt_secret, {
-        expiresIn: config_1.envConfig.jwt_expire,
+        expiresIn: 3600 * 24 * 3,
     });
     return token;
 };

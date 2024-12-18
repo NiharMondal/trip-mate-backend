@@ -10,7 +10,7 @@ export const generateSlug = (payload: string) => {
 
 export const generateToken = (payload: JwtPayload) => {
 	const token = jwt.sign(payload, envConfig.jwt_secret as string, {
-		expiresIn: envConfig.jwt_expire,
+		expiresIn: 3600 * 24 * 3,
 	});
 	return token;
 };

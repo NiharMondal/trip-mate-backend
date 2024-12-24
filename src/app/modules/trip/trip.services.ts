@@ -62,23 +62,16 @@ const getAllFromDB = async (
 	userId: string,
 	query: Record<string, string | unknown>
 ) => {
-	let trips;
+	const trips = new QueryBuilder(
+		Trip.find({ $or: [{ user: { $ne: userId } }] }),
+		query
+	)
+		.search(["title", "destination"])
+		.filter()
+		.budget()
+		.pagination()
+		.sort();
 
-	if (userId) {
-		trips = new QueryBuilder(Trip.find({ user: { $ne: userId } }), query)
-			.search(["title", "destination"])
-			.filter()
-			.budget()
-			.pagination()
-			.sort();
-	} else {
-		trips = new QueryBuilder(Trip.find(), query)
-			.search(["title", "destination"])
-			.filter()
-			.budget()
-			.pagination()
-			.sort();
-	}
 	const res = await trips.queryModel;
 	const metaData = await trips.countTotal();
 

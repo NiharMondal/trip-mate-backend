@@ -27,7 +27,8 @@ const insertIntoDB = (0, asyncHandler_1.default)((req, res) => __awaiter(void 0,
 }));
 //get all trip
 const getAllFromDB = (0, asyncHandler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield trip_services_1.tripServices.getAllFromDB(req.query);
+    const user = req.user;
+    const result = yield trip_services_1.tripServices.getAllFromDB(user === null || user === void 0 ? void 0 : user.id, req.query);
     (0, sendResponse_1.default)(res, {
         statusCode: 200,
         message: "Data fetched successfully",

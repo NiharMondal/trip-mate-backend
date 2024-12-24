@@ -58,16 +58,29 @@ const insertIntoDB = async (payload: ITrip) => {
 };
 
 // get all trip --> public
-const getAllFromDB = async (query: Record<string, string | unknown>) => {
-	const data = new QueryBuilder(Trip.find({ isDeleted: false }), query)
-		.search(["title", "destination"])
-		.filter()
-		.budget()
-		.pagination()
-		.sort();
+const getAllFromDB = async (
+	userId: string,
+	query: Record<string, string | unknown>
+) => {
+	let trips;
 
-	const res = await data.queryModel;
-	const metaData = await data.countTotal();
+	if (userId) {
+		trips = new QueryBuilder(Trip.find({ user: { $ne: userId } }), query)
+			.search(["title", "destination"])
+			.filter()
+			.budget()
+			.pagination()
+			.sort();
+	} else {
+		trips = new QueryBuilder(Trip.find(), query)
+			.search(["title", "destination"])
+			.filter()
+			.budget()
+			.pagination()
+			.sort();
+	}
+	const res = await trips.queryModel;
+	const metaData = await trips.countTotal();
 
 	return {
 		res,

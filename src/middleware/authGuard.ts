@@ -19,7 +19,6 @@ export const authGaurd = (...roles: string[]) => {
 			) as JwtPayload;
 
 			const { id, role } = decodedData;
-
 			const user = await User.findById(id);
 
 			if (!user) {

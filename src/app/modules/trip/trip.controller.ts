@@ -2,7 +2,8 @@ import { Request, Response } from "express";
 import asyncHandler from "../../utils/asyncHandler";
 import { tripServices } from "./trip.services";
 import sendResponse from "../../utils/sendResponse";
-
+import jwt, { JwtPayload } from "jsonwebtoken";
+import { envConfig } from "../../../config";
 //create trip
 const insertIntoDB = asyncHandler(async (req: Request, res: Response) => {
 	const result = await tripServices.insertIntoDB(req.body);
@@ -16,7 +17,9 @@ const insertIntoDB = asyncHandler(async (req: Request, res: Response) => {
 
 //get all trip
 const getAllFromDB = asyncHandler(async (req: Request, res: Response) => {
+	const user = req.user;
 	const result = await tripServices.getAllFromDB(
+		user?.id,
 		req.query as Record<string, string | unknown>
 	);
 

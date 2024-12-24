@@ -59,15 +59,26 @@ const insertIntoDB = (payload) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 // get all trip --> public
-const getAllFromDB = (query) => __awaiter(void 0, void 0, void 0, function* () {
-    const data = new QueryBuilder_1.default(trip_model_1.default.find({ isDeleted: false }), query)
-        .search(["title", "destination"])
-        .filter()
-        .budget()
-        .pagination()
-        .sort();
-    const res = yield data.queryModel;
-    const metaData = yield data.countTotal();
+const getAllFromDB = (userId, query) => __awaiter(void 0, void 0, void 0, function* () {
+    let trips;
+    if (userId) {
+        trips = new QueryBuilder_1.default(trip_model_1.default.find({ user: { $ne: userId } }), query)
+            .search(["title", "destination"])
+            .filter()
+            .budget()
+            .pagination()
+            .sort();
+    }
+    else {
+        trips = new QueryBuilder_1.default(trip_model_1.default.find(), query)
+            .search(["title", "destination"])
+            .filter()
+            .budget()
+            .pagination()
+            .sort();
+    }
+    const res = yield trips.queryModel;
+    const metaData = yield trips.countTotal();
     return {
         res,
         metaData,

@@ -4,6 +4,7 @@ import { validateRequest } from "../../../middleware/validateRequest";
 import { tripValidation } from "./trip.validation";
 import { authGaurd } from "../../../middleware/authGuard";
 import { USER_ROLE } from "../../helpers/role.constant";
+import { auth } from "../../../middleware/auth";
 
 const router = Router();
 
@@ -43,6 +44,6 @@ router
 		validateRequest(tripValidation.createTrip),
 		tripController.insertIntoDB
 	)
-	.get(tripController.getAllFromDB);
+	.get(auth, tripController.getAllFromDB);
 
 export const tourRoutes = router;

@@ -16,6 +16,7 @@ class QueryBuilder {
     }
     filter() {
         const queryCopy = Object.assign({}, this.query);
+        queryCopy["isDeleted"] = false;
         const exludedFields = [
             "search",
             "page",

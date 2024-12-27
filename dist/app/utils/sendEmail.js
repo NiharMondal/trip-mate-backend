@@ -18,8 +18,8 @@ const config_1 = require("../../config");
 const sendEmail = (to, link) => __awaiter(void 0, void 0, void 0, function* () {
     const transporter = nodemailer_1.default.createTransport({
         host: "smtp.gmail.com",
-        port: config_1.envConfig.node_end === "production" ? 486 : 587,
-        secure: config_1.envConfig.node_end ? true : false, // true for port 465, false for other ports
+        port: config_1.envConfig.node_end === "production" ? 465 : 587,
+        secure: config_1.envConfig.node_end === "production" ? true : false, // true for port 465, false for other ports
         auth: {
             user: config_1.envConfig.emailUtils.email,
             pass: config_1.envConfig.emailUtils.password,

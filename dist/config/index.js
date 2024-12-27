@@ -10,6 +10,7 @@ dotenv_1.default.config({ path: path_1.default.join(process.cwd(), ".env") });
 exports.envConfig = {
     port: 5000,
     salt_round: 10,
+    node_end: process.env.NODE_ENV,
     front_end_url: process.env.FRONT_END_URL,
     database_url: process.env.URI,
     mongo_uri: process.env.MONGO_URI,

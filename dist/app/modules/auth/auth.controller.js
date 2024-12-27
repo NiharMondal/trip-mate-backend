@@ -43,8 +43,27 @@ const changePassword = (0, asyncHandler_1.default)((req, res) => __awaiter(void 
         result: result,
     });
 }));
+const forgotPassword = (0, asyncHandler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield auth_services_1.authServices.forgotPassword(req.body);
+    (0, sendResponse_1.default)(res, {
+        statusCode: 200,
+        message: "Reset link is generated",
+        result: result,
+    });
+}));
+const resetPassword = (0, asyncHandler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id, token } = req.query;
+    const result = yield auth_services_1.authServices.resetPassword(id, token, req.body);
+    (0, sendResponse_1.default)(res, {
+        statusCode: 200,
+        message: "Password reseted successfully",
+        result: result,
+    });
+}));
 exports.authController = {
     registerUser,
     loginUser,
     changePassword,
+    forgotPassword,
+    resetPassword,
 };

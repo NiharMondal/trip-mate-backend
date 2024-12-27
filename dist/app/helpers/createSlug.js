@@ -12,9 +12,9 @@ const generateSlug = (payload) => {
     return slug;
 };
 exports.generateSlug = generateSlug;
-const generateToken = (payload) => {
+const generateToken = (payload, expiresIn) => {
     const token = jsonwebtoken_1.default.sign(payload, config_1.envConfig.jwt_secret, {
-        expiresIn: 3600 * 24 * 3,
+        expiresIn,
     });
     return token;
 };

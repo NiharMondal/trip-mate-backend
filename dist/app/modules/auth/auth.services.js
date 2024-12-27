@@ -17,6 +17,9 @@ const createSlug_1 = require("../../helpers/createSlug");
 const hashPasword_1 = require("../../helpers/hashPasword");
 const CustomeError_1 = __importDefault(require("../../utils/CustomeError"));
 const user_model_1 = __importDefault(require("../user/user.model"));
+const config_1 = require("../../../config");
+const sendEmail_1 = require("../../utils/sendEmail");
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const registerUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield user_model_1.default.findOne({ email: payload.email });
     if (user) {
@@ -46,7 +49,7 @@ const loginUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
         name: user.name,
         role: user.role,
     };
-    const token = (0, createSlug_1.generateToken)(tokenPayload);
+    const token = (0, createSlug_1.generateToken)(tokenPayload, "7d");
     return {
         accessToken: token,
     };
@@ -74,8 +77,54 @@ const changePassword = (id, payload) => __awaiter(void 0, void 0, void 0, functi
         },
     }, { new: true });
 });
+const forgotPassword = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield user_model_1.default.findOne({ email: payload.email });
+    if (!user) {
+        throw new CustomeError_1.default(404, "User not found!");
+    }
+    if (user && user.isDeleted) {
+        throw new CustomeError_1.default(302, "Deleted user can not reset password");
+    }
+    const tokenPayload = {
+        id: user._id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+    };
+    const token = (0, createSlug_1.generateToken)(tokenPayload, "10m");
+    const resetUiLink = `${config_1.envConfig.front_end_url}/reset-password?id=${user._id}&token=${token}`;
+    try {
+        const res = yield (0, sendEmail_1.sendEmail)(user.email, resetUiLink);
+        return res;
+    }
+    catch (error) {
+        throw new CustomeError_1.default(400, "Something went wrong!");
+    }
+});
+const resetPassword = (userId, token, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!userId || !token) {
+        throw new CustomeError_1.default(400, "Requested URL is not valid!");
+    }
+    if (payload.password !== payload.confirmPassword) {
+        throw new CustomeError_1.default(400, "Password doesn't match");
+    }
+    const decodedData = jsonwebtoken_1.default.verify(token, config_1.envConfig.jwt_secret);
+    const { id } = decodedData;
+    const user = yield user_model_1.default.findById(id);
+    if (!user) {
+        throw new CustomeError_1.default(404, "You provided invalid token");
+    }
+    const hashedPassword = yield (0, hashPasword_1.hashPassword)(payload.confirmPassword);
+    yield user_model_1.default.findByIdAndUpdate(id, {
+        $set: {
+            password: hashedPassword,
+        },
+    }, { new: true });
+});
 exports.authServices = {
     registerUser,
     loginUser,
     changePassword,
+    forgotPassword,
+    resetPassword,
 };

@@ -16,3 +16,11 @@ export interface IChangePassword {
 	newPassword: string;
 	confirmPassword: string;
 }
+
+export interface IForgotPassword {
+	email: string;
+}
+export interface IResetPassword {
+	password: string;
+	confirmPassword: string;
+}

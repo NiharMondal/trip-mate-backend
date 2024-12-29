@@ -65,11 +65,17 @@ class QueryBuilder<T> {
 
 	sort() {
 		const sortBy = this.query?.sortBy || "createdAt";
-		const order = this.query?.order;
-		const sortOrder = order === "desc" ? -1 : 1; // Determine sort order (default to ascending)
+		const order = this.query?.order || "desc";
+		const sortOrder = order === "asc" ? 1 : -1; // Determine sort order (default to decending)
 
 		// Validate the sortBy field to ensure it's a valid key
-		const validSortFields = ["title", "rating", "budget", "visitors"]; // Add valid fields here
+		const validSortFields = [
+			"title",
+			"rating",
+			"budget",
+			"visitors",
+			"createdAt",
+		]; // Add valid fields here
 		if (sortBy || order) {
 			if (validSortFields.includes(sortBy as string)) {
 				// Create a dynamic sort object
@@ -104,6 +110,7 @@ class QueryBuilder<T> {
 
 	async countTotal() {
 		const queries = this.queryModel.getFilter();
+
 		const totalDocs = await this.queryModel.model.countDocuments(queries);
 		const limit = Number(this.query?.limit) || 10;
 

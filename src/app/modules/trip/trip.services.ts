@@ -144,7 +144,7 @@ const getMyTrips = async (userId: string) => {
 	const res = await Trip.find({
 		user: userId,
 		isDeleted: false,
-	}).select("title destination startDate endDate budget availAbleSeats");
+	}).select("title destination startDate endDate budget maxGuests");
 
 	return res;
 };

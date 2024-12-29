@@ -65,10 +65,16 @@ class QueryBuilder {
     sort() {
         var _a, _b;
         const sortBy = ((_a = this.query) === null || _a === void 0 ? void 0 : _a.sortBy) || "createdAt";
-        const order = (_b = this.query) === null || _b === void 0 ? void 0 : _b.order;
-        const sortOrder = order === "desc" ? -1 : 1; // Determine sort order (default to ascending)
+        const order = ((_b = this.query) === null || _b === void 0 ? void 0 : _b.order) || "desc";
+        const sortOrder = order === "asc" ? 1 : -1; // Determine sort order (default to decending)
         // Validate the sortBy field to ensure it's a valid key
-        const validSortFields = ["title", "rating", "budget", "visitors"]; // Add valid fields here
+        const validSortFields = [
+            "title",
+            "rating",
+            "budget",
+            "visitors",
+            "createdAt",
+        ]; // Add valid fields here
         if (sortBy || order) {
             if (validSortFields.includes(sortBy)) {
                 // Create a dynamic sort object

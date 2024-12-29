@@ -121,7 +121,7 @@ const getMyTrips = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     const res = yield trip_model_1.default.find({
         user: userId,
         isDeleted: false,
-    }).select("title destination startDate endDate budget availAbleSeats");
+    }).select("title destination startDate endDate budget maxGuests");
     return res;
 });
 //freshly added -> public

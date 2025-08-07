@@ -192,35 +192,3 @@ The server will start on http://localhost:5000
     ```http
     PATCH /reviews/:id/approve
     ```
-
-## Installation
-
-1. Clone the repository:
-    ```sh
-    git clone https://github.com/your-repo/tripmate-backend.git
-    ```
-2. Install dependencies:
-    ```sh
-    npm install
-    ```
-3. Set up environment variables in `.env` file.
-4. Start the server:
-    ```sh
-    npm start
-    ```
-
-## Technologies Used
-
--   **Node.js**
--   **Express.js**
--   **MongoDB** (via Mongoose)
--   **JWT Authentication**
--   **Validation Middleware**
-
-## Contributing
-
-Contributions are welcome! Feel free to fork the repository and submit pull requests.
-
-## License
-
-This project is licensed under the MIT License.
